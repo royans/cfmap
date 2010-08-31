@@ -89,7 +89,7 @@ public class CfmapProp {
 	}
 
 	public String toHtmlTableRow(ArrayList<String> columns_requested, String url) {
-		String status = properties.get("status");
+		String status = prop("status");
 		if (status.equals("broken")) {
 			status = "<font style='color:red;font-weight:bold;'>X</font>";
 		}
