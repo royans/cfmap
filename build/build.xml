@@ -1,7 +1,7 @@
-<project name="CfMap" basedir=".." default="package">
+<project name="cfmap" basedir=".." default="package">
 
     <!-- project-specific variables -->
-    <property name="jsp.dir.name" value="CfMap" />
+    <property name="jsp.dir.name" value="cfmap" />
     <property name="package.name" value="${jsp.dir.name}.war" />
     <property name="webapp.dir" value="webapps_dir" />
 
