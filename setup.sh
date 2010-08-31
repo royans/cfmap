@@ -62,10 +62,12 @@ fi
 
 cp $BASE/output/cfmap.war tomcat-live/webapps/
 
-pid8005=`lsof -ai | grep ":8005" | awk '{print $2}'`; kill -9 $pid8005
-pid8080=`lsof -ai | grep ":8080" | awk '{print $2}'`; kill -9 $pid8005
-pid8081=`lsof -ai | grep ":8081" | awk '{print $2}'`; kill -9 $pid8005
-
+pid8005=`lsof -ai | grep ":8005" | awk '{print $2}'`; kill -9 $pid8005 2> /dev/null
+pid8080=`lsof -ai | grep ":8080" | awk '{print $2}'`; kill -9 $pid8080 2> /dev/null
+pid8081=`lsof -ai | grep ":8081" | awk '{print $2}'`; kill -9 $pid8081 2> /dev/null
+user=`whoami`
+pgrep -u $user -f cassandra | xargs kill -9 2> /dev/null
+pgrep -u $user -f java | xargs kill -9 2> /dev/null
 
 ./tomcat-live/bin/startup.sh
 $BASE/cassandra-live/bin/cassandra start
