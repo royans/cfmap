@@ -124,21 +124,6 @@ public class Cfmap {
 		workingCassandraHostList = cassandraHostList;
 	}
 
-	/*
-	 * protected void dumpEverything_1() throws Exception { CassandraClientPool
-	 * pool = CassandraClientPoolFactory.INSTANCE.get(); StopWatch stopWatch =
-	 * new LoggingStopWatch("TimeToGetClient"); CassandraClient client =
-	 * pool.borrowClient(workingCassandraHostList); stopWatch.stop(); try {
-	 * updatehostlist(client, stopWatch.getElapsedTime());
-	 * 
-	 * List<String> keyspaces = client.getKeyspaces(); Iterator<String>
-	 * keyspace_iterator = keyspaces.iterator(); Keyspace keyspace; while
-	 * (keyspace_iterator.hasNext()) { String keyspace_name =
-	 * keyspace_iterator.next(); keyspace = client.getKeyspace(keyspace_name,
-	 * ConsistencyLevel.ONE); } } catch (Exception e) {
-	 * 
-	 * } finally { pool.releaseClient(client); } }
-	 */
 	protected ArrayList<String> getAllReverseRowsFor(String zonename, String rowkey) throws Exception {
 		ArrayList<String> rowkeys;
 		CassandraClientPool pool = null;
@@ -168,7 +153,7 @@ public class Cfmap {
 			stopWatch = new LoggingStopWatch("TimeToGetClient2");
 			if (client != null) {
 				System.out.println(zonename);
-				keyspace = client.getKeyspace(zonename);
+				keyspace = client.getKeyspace(zonename, ConsistencyLevel.ONE);
 			} else {
 				System.out.println("Client is null... 1");
 			}
@@ -653,7 +638,6 @@ public class Cfmap {
 			}
 			keyspace = client.getKeyspace(zonename, ConsistencyLevel.ONE);
 
-			// Keyspace keyspace = client.getKeyspace(zonename);
 			SlicePredicate predicate = new SlicePredicate();
 			List<byte[]> columnlist = new ArrayList<byte[]>();
 			columnlist.add(attribute.getBytes());
