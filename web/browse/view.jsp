@@ -13,6 +13,13 @@
 	if ((request.getParameter("f") != null) && (request.getParameter("f").equals("img"))) {
 		format = "img"; // shell
 	}
+	String[] cols;
+	if (request.getParameter("cols") != null) {
+		cols = request.getParameter("cols").split(",");
+	} else {
+		cols = new String[0];
+	}
+	//	out.println(cols.length);
 	if (format.equals("html")) {
 %>
 <jsp:include page="/browse/header.jsp" />
@@ -25,7 +32,7 @@
 			String ParameterNames = (String) e.nextElement();
 			if (!ParameterNames.equals("c") && !(ParameterNames.equals("submit"))
 					&& !ParameterNames.equals("f") && !(ParameterNames.equals("z"))
-					&& (!request.getParameter(ParameterNames).equals(""))) {
+					&& !(ParameterNames.equals("cols")) && (!request.getParameter(ParameterNames).equals(""))) {
 				find.put(ParameterNames, request.getParameter(ParameterNames));
 			}
 		}
@@ -56,7 +63,6 @@
 				while (hosts.hasNext()) {
 					String host = hosts.next();
 					HashMap<String, String> properties = hostsProperties.get(host);
-
 					try {
 						_clustername = properties.get("clustername");
 						_host = properties.get("host");
@@ -73,8 +79,9 @@
 						if (!apps.contains(_appname)) {
 							apps.add(_appname);
 						}
-					} catch (Exception e) {
 
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
 					CfmapProp p = new CfmapProp(zone, host, properties);
@@ -93,8 +100,8 @@
 						while (properties_output.containsKey(deployed_date)) {
 							deployed_date++;
 						}
-						properties_output.put(deployed_date, p.toHtmlTableRow(new ArrayList<String>(), request
-								.getRequestURL().toString()
+						properties_output.put(deployed_date, p.toHtmlTableRow(cols, request.getRequestURL()
+								.toString()
 								+ "?" + request.getQueryString().toString()));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -105,9 +112,30 @@
 				while (i.hasNext()) {
 					s = properties_output.get(i.next()) + s;
 				}
+
 				out.println("<table>");
-				out
-						.println("<tr><th>Del</th><th>Deployed</th><th>Host:Port</th><th>Host</th><th>Version</th><th>status</th><th>appname</th><th>heartbeat</th><th>zonename</th><th>appnamedir</th><th>clustername</th><th>status url</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th></tr>");
+				if (cols.length > 0) {
+					for (int j = 0; j < cols.length; j++) {
+						
+						String[] ss = cols[j].split(":");
+						String col = ss[0];
+						String colname = "";
+						if (ss.length>1){
+							colname=ss[1];
+						}
+
+						if (ss.length > 1) {
+							out.println("<th>" + colname + "</th>");
+						} else {
+							out.println("<th>" + col + "</th>");
+
+						}
+					}
+					out.println("</tr>");
+				} else {
+					out
+							.println("<tr><th>Del</th><th>Dep</th><th>Host:Port</th><th>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th>Version</th><th>url</th></tr>");
+				}
 				out.println(s);
 				out.println("<tr><td colspan=20>");
 				{
@@ -166,13 +194,11 @@
 					if (failed > 0) {
 						out.println("warning");
 						response.sendRedirect("/cfmap/browse/theme/error.png");
-					}else{
-						out.println("ok");						
+					} else {
+						out.println("ok");
 						response.sendRedirect("/cfmap/browse/theme/tick.png");
 					}
 				}
-				//JSONObject jsonObj = new JSONObject(hostsProperties);
-				//out.println(jsonObj.toString());
 			}
 			if (format.equals("j")) {
 				JSONObject jsonObj = new JSONObject(hostsProperties);
@@ -203,3 +229,4 @@
 <%
 	}
 %>
+

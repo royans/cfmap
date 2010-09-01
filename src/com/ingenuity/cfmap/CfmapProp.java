@@ -75,10 +75,11 @@ public class CfmapProp {
 		}
 	}
 
-	public String fromArrayToString(ArrayList<String> input, String property,String url) {
+	public String fromArrayToString(ArrayList<String> input, String property, String url) {
 		String result = "";
 		for (int i = 0; i < input.size(); i++) {
-			String j="<a style='text-decoration:none;' href='"+url+"&"+property+"="+input.get(i)+"' >"+input.get(i)+"</a>";
+			String j = "<a style='text-decoration:none;' href='" + url + "&" + property + "=" + input.get(i) + "' >"
+					+ input.get(i) + "</a>";
 			if (i > 0) {
 				result = result + ", " + j;
 			} else {
@@ -88,7 +89,7 @@ public class CfmapProp {
 		return result;
 	}
 
-	public String toHtmlTableRow(ArrayList<String> columns_requested, String url) {
+	public String toHtmlTableRow(String[] cols, String url) {
 		String status = prop("status");
 		if (status.equals("broken")) {
 			status = "<font style='color:red;font-weight:bold;'>X</font>";
@@ -109,20 +110,53 @@ public class CfmapProp {
 		if (status.equals("started")) {
 			status = "<font style='color:lightgreen;font-size:0.6em;'>started</font>";
 		}
-
-		String result = "<tr><td><a href='/cfmap/browse/deletereally.jsp?key=" + key + "&z=" + zone + "'>x</a>"
-				+ "</td><td>" + prop("deployed_date") + "</td><td> <a href='/cfmap/browse/viewrecord.jsp?key=" + key
-				+ "&z=" + zone + "'>" + prop("host") + ":" + prop("port") + "</a></td> <td> <a href='" + url + "&host="
-				+ prop("host") + "'>" + prop("host")
-				+ "</a></td><td style='padding-left:10px;padding-right:10px;'> <a href='" + url + "&version="
-				+ prop("version") + "'>" + prop("version") + "</a></td><td>" + status + "</td><td><a href='" + url
-				+ "&appname=" + prop("appname") + "'>" + prop("appname") + "</a></td><td >" + prop("checked")
-				+ "</td><td><a href='" + url + "&zonename=" + prop("zonename") + "'>" + prop("zonename")
-				+ "</a></td><td><a href='" + url + "&appnamedir=" + prop("appnamedir") + "'>" + prop("appnamedir")
-				+ "</a></td><td><a href='" + url + "&clustername=" + prop("clustername") + "'>" + prop("clustername")
-				+ "</a></td><td><a href='" + prop("url").replace("'", "") + "'>" + prop("url").replace("'", "")
-				+ "</a>" + "</td>" + "<td>" + prop("stats_host_ps-count") + "</td><td><center>"
-				+ prop("stats_host_netstat-est") + "</center></td><td>" + prop("stats_host_load-avg") + "</td><td><center>" + prop("stats_host_freemem") + "</center></td><td>" + prop("stats_host_iowait") + "</td></tr> ";
+		String result = "";
+		if ((cols != null) && (cols.length > 0)) {
+			result = result + "<tr>";
+			for (int i = 0; i < cols.length; i++) {
+				String[] s = cols[i].split(":");
+				String col = s[0];
+				String colname = "";
+				if (s.length > 1) {
+					colname = s[1];
+				}
+				boolean found = false;
+				if (col.equals("del")) {
+					result = result + "<td><a href='/cfmap/browse/deletereally.jsp?key=" + key + "&z=" + zone
+							+ "'>x</a>" + "</td>";
+					found = true;
+				}
+				if (col.equals("key")) {
+					result = result + "<td> <a href='/cfmap/browse/viewrecord.jsp?key=" + key + "&z=" + zone + "'>"
+							+ prop("host") + ":" + prop("port") + "</a></td>";
+					found = true;
+				}
+				if (col.contains("stats_")) {
+					result = result + "<td>" + prop(col) + "</td>";
+					found = true;
+				}
+				if (!found) {
+					result = result + "<td><a href='" + url + "&appnamedir=" + prop("appnamedir") + "'>" + prop(col)
+							+ "</a></td>";
+				}
+			}
+			result = result + "</tr>";
+		} else {
+			result = "<tr><td><a href='/cfmap/browse/deletereally.jsp?key=" + key + "&z=" + zone + "'>x</a>"
+					+ "</td><td>" + prop("deployed_date") + "</td><td> <a href='/cfmap/browse/viewrecord.jsp?key="
+					+ key + "&z=" + zone + "'>" + prop("host") + ":" + prop("port") + "</a></td> <td> <a href='" + url
+					+ "&host=" + prop("host") + "'>" + prop("host") + "</a></td><td>" + status + "</td><td><a href='"
+					+ url + "&appname=" + prop("appname") + "'>" + prop("appname") + "</a></td><td >" + prop("checked")
+					+ "</td><td><a href='" + url + "&zonename=" + prop("zonename") + "'>" + prop("zonename")
+					+ "</a></td><td><a href='" + url + "&appnamedir=" + prop("appnamedir") + "'>" + prop("appnamedir")
+					+ "</a></td><td><a href='" + url + "&clustername=" + prop("clustername") + "'>"
+					+ prop("clustername") + "</a></td><td>" + prop("stats_host_ps-count") + "</td><td><center>"
+					+ prop("stats_host_netstat-est") + "</center></td><td>" + prop("stats_host_load-avg")
+					+ "</td><td><center>" + prop("stats_host_freemem") + "</center></td><td>"
+					+ prop("stats_host_iowait") + "</td><td style='padding-left:10px;padding-right:10px;'> <a href='"
+					+ url + "&version=" + prop("version") + "'>" + prop("version") + "</a></td><td><a href='"
+					+ prop("url").replace("'", "") + "'>" + prop("url").replace("'", "") + "</a>" + "</td>" + "</tr> ";
+		}
 		return result;
 	}
 
@@ -137,3 +171,4 @@ public class CfmapProp {
 	}
 
 }
+
