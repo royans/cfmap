@@ -1,6 +1,6 @@
-------------------------------------------------------------------------------------------------------------------------------------------
-2010 Aug 30: Royans K Tharakan [ Ingenuity Systems ] rkt //at// pobox //dot// com
-------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+2010 Aug 30: Royans K Tharakan [ Ingenuity Systems ] rkt@ingenuity.com
+----------------------------------------------------------------------------------------
 
 Cfmap (Configuration Map) is a highly distributed, fault tolerant, configuration and status repository. It can help you do the following things
 
