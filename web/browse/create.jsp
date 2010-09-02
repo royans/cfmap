@@ -27,21 +27,26 @@
 						map.put("version_x_x", vs[0] + "." + vs[1]);
 						map.put("version_x_x_x", vs[0]);
 					} else {
-						if (!(ParameterNames.equals("z")&&(zone.equals("unset")))){
-							map.put(ParameterNames, request.getParameter(ParameterNames));							
+						if (!(ParameterNames.equals("z") && (zone.equals("unset")))) {
+							map.put(ParameterNames, request.getParameter(ParameterNames));
 						}
 					}
 				}
 			}
-			
-			if (map.containsKey("clustername") && !map.containsKey("zonename")){
-				String[] c=map.get("clustername").split("_");
-				if (c.length==3){
-					map.put("zonename",c[1]);
+
+			if (!map.containsKey("checked")) {
+				long timestamp = System.currentTimeMillis() / 1000;
+				map.put("checked", new Long(timestamp).toString());
+			}
+			if (map.containsKey("clustername") && !map.containsKey("zonename")) {
+				String[] c = map.get("clustername").split("_");
+				if (c.length == 3) {
+					map.put("zonename", c[1]);
 				}
 			}
 
 			String ipaddr = request.getRemoteAddr();
+			map.put("ip", ipaddr);
 
 			if (map.containsKey("host") && map.containsKey("port") && map.containsKey("appname")) {
 				out.println(t.insertandinvert(ipaddr, zone, map));
@@ -62,3 +67,4 @@
 </body>
 
 </html>
+
