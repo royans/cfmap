@@ -1,6 +1,13 @@
-----------------------------------------------------------------------------------------
-2010 Aug 30: Royans K Tharakan [ Ingenuity Systems ] rkt@ingenuity.com
-----------------------------------------------------------------------------------------
+Aug 30 2010
+Copyright 2010 Ingenuity Systems, See included LICENSE file
+Copyright 2010 Royans K Tharakan <royans@gmail.com>, See included LICENSE file
+
+
+
+
+
+
+
 
 Cfmap (Configuration Map) is a highly distributed, fault tolerant, configuration and status repository. It can help you do the following things
 
@@ -11,20 +18,8 @@ Cfmap (Configuration Map) is a highly distributed, fault tolerant, configuration
 5) Provides a way for other intelligent monitoring/alerting tools to use cfmap for monitoring and alerting purposes
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------------------------
 Acknowledgements
+----------------
 
 Following tools,libraries or code fragments were used in this application.
 
@@ -36,16 +31,5 @@ Following tools,libraries or code fragments were used in this application.
 6) Famfamfam - http://www.famfamfam.com/lab/icons/silk/
 
 If I missed anyone else, please let me know and I'll add them in.
-------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
 
 

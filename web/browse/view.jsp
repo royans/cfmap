@@ -153,7 +153,7 @@
 							+ _host_load_total
 							/ serverlist.size()
 							+ " load average </td><td>"
-							+ p.fromArrayToString(serverlist, "host", request.getRequestURI() + "?"
+							+ p.fromArrayToString(serverlist, "host", request.getRequestURL() + "?"
 									+ request.getQueryString()) + "</td></tr>");
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Apps ("
 							+ apps.size()

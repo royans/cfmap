@@ -136,7 +136,7 @@ public class CfmapProp {
 					found = true;
 				}
 				if (!found) {
-					result = result + "<td><a href='" + url + "&appnamedir=" + prop("appnamedir") + "'>" + prop(col)
+					result = result + "<td><a href='" + url + "&"+col+"=" + prop(col) + "'>" + prop(col)
 							+ "</a></td>";
 				}
 			}
