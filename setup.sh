@@ -4,7 +4,7 @@
 cd `dirname $0`
 BASE=`pwd`
 
-if [ -f $BASE/cassandra_data ]
+if [ -d $BASE/cassandra_data ]
 then
     echo "starting up..."
 else
