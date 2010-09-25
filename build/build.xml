@@ -57,14 +57,6 @@
         <javac debug="on" srcdir="${src.dir}" destdir="${temp.dir.classes}" includes="**/*">
             <classpath refid="build.class.path" />
         </javac>
-
-        <!-- compile files on the src-tests path -->
-	<!--
-        <echo>Compiling ${src.tests.dir} files ...</echo>
-        <javac debug="on" srcdir="${src.tests.dir}" destdir="${temp.dir.classes}" includes="com/**">
-            <classpath refid="build.class.path" />
-        </javac>
-	-->
     </target>
 
     <!-- PACKAGE -->
@@ -90,7 +82,5 @@
         <classes dir="${temp.dir.classes}" />
       </war>
     </target>
-
-	
 
 </project>

@@ -1,27 +1,48 @@
 #!/bin/bash
-
-
 cd `dirname $0`
 BASE=`pwd`
 
-if [ -d $BASE/cassandra_data ]
-then
-    echo "starting up..."
-else
-TOOLS="ant java javac"
+########################################
+# check for tools
+########################################
 
+TOOLS="ant java javac"
 for TOOL in `echo $TOOLS`
 do
     T=`which $TOOL`
     if [ $? -gt 0 ]
     then
-	echo "$TOOL not found"
+        echo "$TOOL not found"
     else
-	echo "$TOOL found :$T"
+        echo "$TOOL found :$T"
     fi
 done
 
-cd build
+
+########################################
+# prepare dirs
+########################################
+
+mkdir -p $BASE/output
+mkdir -p $BASE/tmp
+cd $BASE/tmp
+
+
+########################################
+# prepare jetty
+########################################
+
+JETTYC=jetty-contrib-7.0.0.pre5
+svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
+cd $JETTYC/jetty-runner
+mvn clean install
+cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/jetty-runner.jar
+
+########################################
+# compile cfmap
+########################################
+
+cd $BASE/build
 ant
 
 cd $BASE
@@ -30,19 +51,10 @@ then
     echo "Build completed"
 fi
 
-# get apache tomcat
-if [ -f apache-tomcat-6.0.29.tar.gz ]
-then
-    echo "skip download of tomcat"
-else
-    wget http://mirror.its.uidaho.edu/pub/apache//tomcat/tomcat-6/v6.0.29/bin/apache-tomcat-6.0.29.tar.gz
-fi
-rm -rf apache-tomcat-6.0.29
-rm -rf tomcat-live
-tar xvzf apache-tomcat-6.0.29.tar.gz
-mv apache-tomcat-6.0.29 tomcat-live
+########################################
+# prepare cassandra
+########################################
 
-# untar the bundled cassandra
 tar -xvzf contrib/apache-cassandra-0.6.4-bin.tar.gz
 rm -rf cassandra-live
 mv apache-cassandra-0.6.4 cassandra-live
@@ -58,7 +70,16 @@ perl -p -i -e "s#com.sun.management.jmxremote.port=8080#com.sun.management.jmxre
 cd $BASE
 mkdir -p $BASE/cassandra_data
 
-fi
+
+
+exit
+
+######################################################################################################################
+######################################################################################################################
+######################################################################################################################
+######################################################################################################################
+######################################################################################################################
+
 
 cp $BASE/output/cfmap.war tomcat-live/webapps/
 mv $BASE/output $BASE/build
@@ -69,8 +90,4 @@ pid8081=`lsof -ai | grep ":8081" | awk '{print $2}'`; kill -9 $pid8081 2> /dev/n
 user=`whoami`
 pgrep -u $user -f cassandra | xargs kill -9 2> /dev/null
 pgrep -u $user -f java | xargs kill -9 2> /dev/null
-
-./tomcat-live/bin/startup.sh
-$BASE/cassandra-live/bin/cassandra start
-
 
