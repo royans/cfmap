@@ -21,6 +21,10 @@ if [ -d $BASE/cassandra_data ]
 then
     cd $LOG
     nohup $BASE/cassandra/bin/cassandra start & > /dev/null 2> /dev/null 
+    _PID1=$!
     nohup java -jar $BASE/lib/jetty-runner.jar --port $cfmap_port --path /cfmap $BASE/lib/cfmap.war & > /dev/null 2> /dev/null
+    _PID2=$!
+
+    echo "$_PID1 $_PID2" > $LOG/running.pid
 fi
 
