@@ -135,6 +135,13 @@
         <lib dir="${lib.dir}" />
         <classes dir="${temp.dir.classes}" />
       </war>
+
+    <tar destfile="cfmap.tar" basedir="${dest.dir}"/>
+    <gzip destfile="cfmap.tar.gz" src="cfmap.tar"/>
+
+    <delete file="cfmap.tar"/>
+
     </target>
+
 
 </project>
