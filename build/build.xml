@@ -113,11 +113,7 @@
       </copy>
 
 
-      <copy todir="${dest.dir}">
-        <fileset dir="${binaries.dir}">
-          <include name="cassandra"/>
-        </fileset>
-      </copy>
+      <copydir dest="${dest.dir}/cassandra" src="${binaries.dir}/cassandra" />
 
       <copy todir="${lib.dir}">
         <fileset dir="${binaries.dir}/lib">

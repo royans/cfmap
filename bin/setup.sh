@@ -23,7 +23,7 @@ done
 # prepare dirs
 ########################################
 
-mkdir -p $BASE/output
+mkdir -p $BASE/output/lib
 mkdir -p $BASE/tmp
 cd $BASE/tmp
 
@@ -47,8 +47,9 @@ tar -xvzf contrib/apache-cassandra-0.6.4-bin.tar.gz
 rm -rf cassandra
 mv apache-cassandra-0.6.4 $BASE/output/cassandra
 
-rm -rf $BASE/output/target
+#rm -rf $BASE/output/target
 
+rm -rf $BASE/binaries
 mv $BASE/output $BASE/binaries
 
 ########################################
@@ -57,4 +58,3 @@ mv $BASE/output $BASE/binaries
 
 cd $BASE/build
 ant
-
