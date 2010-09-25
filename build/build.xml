@@ -90,7 +90,7 @@
 
       <copy todir="${dest.dir}/bin/">
         <fileset dir="${bin.dir}">
-          <include name="**/setup*"/>
+          <include name="**/start*"/>
           <include name="**/shutdown*"/>
         </fileset>
       </copy>
