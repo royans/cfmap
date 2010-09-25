@@ -1,5 +1,9 @@
 <project name="cfmap" basedir=".." default="package">
 
+    <tstamp>
+	<format property="DATE" pattern="yyyyMMdd-HHmmss" locale="en,UK"/>
+    </tstamp>
+
     <!-- project-specific variables -->
     <property name="jsp.dir.name" value="cfmap" />
     <property name="package.name" value="${jsp.dir.name}.war" />
@@ -139,7 +143,7 @@
       </war>
 
     <tar destfile="cfmap.tar" basedir="${dest.dir}"/>
-    <gzip destfile="cfmap.tar.gz" src="cfmap.tar"/>
+    <gzip destfile="cfmap-${DATE}.tar.gz" src="cfmap.tar"/>
 
     <delete file="cfmap.tar"/>
 
