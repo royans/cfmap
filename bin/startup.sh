@@ -17,5 +17,8 @@ mkdir -p $BASE/cassandra_data
 if [ -d $BASE/cassandra_data ]
 then
     $BASE/cassandra/bin/cassandra start 2> /dev/null 
+    java -jar $BASE/lib/jetty-runner.jar --path /cfmap $BASE/lib/cfmap.war 2> /dev/null
 fi
+
+
 
