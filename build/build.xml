@@ -10,6 +10,9 @@
     <property file="${build.dir}/build.${env.HOSTNAME}" />
 
     <property name="lib.dir" value="lib" />
+    <property name="conf.dir" value="conf" />
+    <property name="bin.dir" value="bin" />
+    <property name="contrib_cassandra.dir" value="contrib/cassandra" />
     <property name="pages.dir" value="web" />
     <property name="src.dir" value="src" />
     <property name="src.tests.dir" value="src-tests" />
@@ -43,6 +46,9 @@
 
     <target name="prepare" depends="clean">
         <mkdir dir="${dest.dir}" />
+        <mkdir dir="${dest.dir}/bin" />
+        <mkdir dir="${dest.dir}/conf" />
+        <mkdir dir="${dest.dir}/conf/cassandra" />
         <mkdir dir="${temp.dir}" />
         <mkdir dir="${temp.dir.lib}" />
         <mkdir dir="${temp.dir.meta-inf}" />
@@ -74,6 +80,34 @@
           <include name="**/*.xsl"/>
         </fileset>
       </copy>
+
+      <copy todir="${dest.dir}/conf/">
+        <fileset dir="${conf.dir}">
+          <include name="**/*.*"/>
+        </fileset>
+      </copy>
+
+      <copy todir="${dest.dir}/bin/">
+        <fileset dir="${bin.dir}">
+          <include name="**/setup*"/>
+          <include name="**/shutdown*"/>
+        </fileset>
+      </copy>
+
+      <copy todir="${dest.dir}">
+        <fileset dir="${bin.dir}/..">
+          <include name="**/README*"/>
+          <include name="**/LIC*"/>
+        </fileset>
+      </copy>
+
+
+      <copy todir="${dest.dir}/conf/cassandra/">
+        <fileset dir="${contrib_cassandra.dir}">
+          <include name="**/*.*"/>
+        </fileset>
+      </copy>
+
     	
       <!-- the ant war task. with all resources in place, create the war file -->
       <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
