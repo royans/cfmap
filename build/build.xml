@@ -17,7 +17,7 @@
     <property name="dest.dir" value="output" />
 
     <!-- put everything in a temp folder with the right structure during the build -->
-    <property name="temp.dir" value="output/temp" />
+    <property name="temp.dir" value="tmp" />
     <property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
     <property name="temp.dir.lib" value="${temp.dir.web-inf}/lib" />
     <property name="temp.dir.classes" value="${temp.dir.web-inf}/classes" />

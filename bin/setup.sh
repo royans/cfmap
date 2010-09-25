@@ -27,17 +27,6 @@ mkdir -p $BASE/output
 mkdir -p $BASE/tmp
 cd $BASE/tmp
 
-
-########################################
-# prepare jetty
-########################################
-
-JETTYC=jetty-contrib-7.0.0.pre5
-svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
-cd $JETTYC/jetty-runner
-mvn clean install
-cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/jetty-runner.jar
-
 ########################################
 # compile cfmap
 ########################################
@@ -45,11 +34,18 @@ cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/jetty-ru
 cd $BASE/build
 ant
 
+
+########################################
+# prepare jetty
+########################################
+
+JETTYC=jetty-contrib-7.0.0.pre5
+cd $BASE/tmp
+svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
+cd $JETTYC/jetty-runner
+mvn clean install
+cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/jetty-runner.jar
 cd $BASE
-if [ -f $BASE/output/cfmap.war ]
-then
-    echo "Build completed"
-fi
 
 ########################################
 # prepare cassandra
