@@ -12,6 +12,7 @@
     <property name="lib.dir" value="lib" />
     <property name="conf.dir" value="conf" />
     <property name="bin.dir" value="bin" />
+    <property name="binaries.dir" value="binaries" />
     <property name="contrib_cassandra.dir" value="contrib/cassandra" />
     <property name="pages.dir" value="web" />
     <property name="src.dir" value="src" />
@@ -95,6 +96,8 @@
         </fileset>
       </copy>
 
+      <chmod file="${dest.dir}/bin/*.sh" perm="ugo+rx"/>
+
       <copy todir="${dest.dir}">
         <fileset dir="${bin.dir}/..">
           <include name="**/README*"/>
@@ -109,7 +112,27 @@
         </fileset>
       </copy>
 
-    	
+
+      <copy todir="${dest.dir}">
+        <fileset dir="${binaries.dir}">
+          <include name="cassandra"/>
+        </fileset>
+      </copy>
+
+      <copy todir="${lib.dir}">
+        <fileset dir="${binaries.dir}/lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </copy>
+
+      <copy todir="${dest.dir}">
+        <fileset dir="${binaries.dir}">
+          <include name="README.txt"/>
+          <include name="LICENSE.txt"/>
+        </fileset>
+      </copy>
+
+
       <!-- the ant war task. with all resources in place, create the war file -->
       <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
         <fileset dir="${pages.dir}"/>

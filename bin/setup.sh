@@ -28,14 +28,6 @@ mkdir -p $BASE/tmp
 cd $BASE/tmp
 
 ########################################
-# compile cfmap
-########################################
-
-cd $BASE/build
-ant
-
-
-########################################
 # prepare jetty
 ########################################
 
@@ -56,3 +48,13 @@ rm -rf cassandra
 mv apache-cassandra-0.6.4 $BASE/output/cassandra
 
 rm -rf $BASE/output/target
+
+mv $BASE/output $BASE/binaries
+
+########################################
+# compile cfmap
+########################################
+
+cd $BASE/build
+ant
+
