@@ -54,3 +54,5 @@ cd $BASE
 tar -xvzf contrib/apache-cassandra-0.6.4-bin.tar.gz
 rm -rf cassandra-live
 mv apache-cassandra-0.6.4 $BASE/output/cassandra-live
+
+rm -rf $BASE/output/target
