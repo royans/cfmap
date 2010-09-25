@@ -26,7 +26,7 @@
     <property name="temp.dir.classes" value="${temp.dir.web-inf}/classes" />
     <property name="temp.dir.meta-inf" value="${temp.dir}/META-INF" />
 
-    <property name="package.file" value="${dest.dir}/${package.name}" />
+    <property name="package.file" value="${dest.dir}/lib/${package.name}" />
 
     <path id="build.class.path">
         <fileset dir="lib">
@@ -47,6 +47,7 @@
     <target name="prepare" depends="clean">
         <mkdir dir="${dest.dir}" />
         <mkdir dir="${dest.dir}/bin" />
+        <mkdir dir="${dest.dir}/lib" />
         <mkdir dir="${dest.dir}/conf" />
         <mkdir dir="${dest.dir}/conf/cassandra" />
         <mkdir dir="${temp.dir}" />
