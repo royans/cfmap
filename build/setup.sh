@@ -52,6 +52,7 @@ mv apache-cassandra-0.6.4 $BASE/output/cassandra
 rm -rf $BASE/binaries
 mv $BASE/output $BASE/binaries
 
+exit
 ########################################
 # compile cfmap
 ########################################

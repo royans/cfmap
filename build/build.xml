@@ -20,6 +20,8 @@
     <property name="resources.dir" value="resources" />
     <property name="dest.dir" value="output" />
 
+    <exec executable="build/setup.sh" />
+
     <!-- put everything in a temp folder with the right structure during the build -->
     <property name="temp.dir" value="tmp" />
     <property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
