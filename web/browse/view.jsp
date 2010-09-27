@@ -28,11 +28,11 @@
 
 <table style='width: 100%;'>
 	<tr>
-		<!--
-		<td style='text-align: right; padding-right: 20px;'> <div style='width: 90%;' id='slickbox'>slick</div> </td>
+		<td style='text-align: right; padding-right: 20px;'>
+		<div style='width: 90%;' id='slickbox'>slick</div>
+		</td>
 		<td style="width: 100px;"><a href='#' OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
-		-->
-		<td></td>
+
 	</tr>
 </table>
 <%
@@ -65,7 +65,7 @@
 			String zone = request.getParameter("z");
 			String ipaddr = request.getRemoteAddr();
 			if (find.size() == 0) {
-				find.put("all", "all");
+				find.put("_type", "apps");
 			}
 			ArrayList<String> cols_present=new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
