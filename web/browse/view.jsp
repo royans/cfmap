@@ -23,7 +23,21 @@
 	if (format.equals("html")) {
 %>
 <jsp:include page="/browse/header.jsp" />
+
+<script src="/cfmap/browse/jquery/jquery.min.js"></script>
+
+<table style='width: 100%;'>
+	<tr>
+		<td style='text-align: right; padding-right: 20px;'>
+		<div style='width: 90%;' id='slickbox'>slick</div>
+		</td>
+		<td style="width: 100px;"'><a href='#'
+			OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
+
+	</tr>
+</table>
 <%
+	//<a href='javascript:$("#preferences").toggle("slow");'>Preferences</a>
 	}
 	try {
 		Cfmap t = Cfmap.getInstance();
@@ -54,6 +68,7 @@
 			if (find.size() == 0) {
 				find.put("all", "all");
 			}
+			ArrayList<String> cols_present=new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
 			if (format.equals("html")) {
 				Iterator<String> hosts = hostsProperties.keySet().iterator();
@@ -100,9 +115,10 @@
 						while (properties_output.containsKey(deployed_date)) {
 							deployed_date++;
 						}
-						properties_output.put(deployed_date, p.toHtmlTableRow(cols, request.getRequestURL()
+						properties_output.put(deployed_date, p.toHtmlTableRow(cols, request.getRequestURI()
 								.toString()
 								+ "?" + request.getQueryString().toString()));
+						cols_present.addAll(p.cols_present);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -116,19 +132,19 @@
 				out.println("<table>");
 				if (cols.length > 0) {
 					for (int j = 0; j < cols.length; j++) {
-						
+
 						String[] ss = cols[j].split(":");
 						String col = ss[0];
 						String colname = "";
-						if (ss.length>1){
-							colname=ss[1];
-						}
-
 						if (ss.length > 1) {
-							out.println("<th>" + colname + "</th>");
-						} else {
-							out.println("<th>" + col + "</th>");
-
+							colname = ss[1];
+						}
+						if (cols_present.contains(ss[0]) == true) {
+							if (ss.length > 1) {
+								out.println("<th>" + colname + "</th>");
+							} else {
+								out.println("<th>" + col + "</th>");
+							}
 						}
 					}
 					out.println("</tr>");
@@ -153,7 +169,7 @@
 							+ _host_load_total
 							/ serverlist.size()
 							+ " load average </td><td>"
-							+ p.fromArrayToString(serverlist, "host", request.getRequestURL() + "?"
+							+ p.fromArrayToString(serverlist, "host", request.getRequestURI() + "?"
 									+ request.getQueryString()) + "</td></tr>");
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Apps ("
 							+ apps.size()
@@ -186,6 +202,10 @@
 							}
 						}
 					}
+				}
+				if (total == 0 ){
+					out.println("not found");
+					response.sendRedirect("/cfmap/browse/theme/exclamation.png");					
 				}
 				if ((total / 2) < failed) {
 					out.println("failed");

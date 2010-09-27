@@ -19,13 +19,7 @@
 				ParameterNames = (String) e.nextElement();
 				if ((!ParameterNames.equals("c")) && (!ParameterNames.equals("submit"))) {
 					if (ParameterNames.equals("version")) {
-						String v_ = request.getParameter(ParameterNames) + ".0.0.0.0.0";
-						String[] vs = null;
-						vs = v_.split("\\.");
-						map.put(ParameterNames, vs[0] + "." + vs[1] + "." + vs[2] + "." + vs[3]);
-						map.put("version_x", vs[0] + "." + vs[1] + "." + vs[2]);
-						map.put("version_x_x", vs[0] + "." + vs[1]);
-						map.put("version_x_x_x", vs[0]);
+						map.put(ParameterNames, request.getParameter(ParameterNames));
 					} else {
 						if (!(ParameterNames.equals("z") && (zone.equals("unset")))) {
 							map.put(ParameterNames, request.getParameter(ParameterNames));
