@@ -1,11 +1,9 @@
 package com.ingenuity.cfmap;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,19 +11,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.cassandra.thrift.*;
-import org.apache.thrift.TException;
 import me.prettyprint.cassandra.service.CassandraClient;
 import me.prettyprint.cassandra.service.CassandraClientPool;
 import me.prettyprint.cassandra.service.CassandraClientPoolFactory;
 import me.prettyprint.cassandra.service.Keyspace;
 import me.prettyprint.cassandra.service.PoolExhaustedException;
-import me.prettyprint.cassandra.utils.StringUtils;
-
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnPath;
-import org.apache.cassandra.thrift.InvalidRequestException;
 import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.UnavailableException;
 import org.perf4j.LoggingStopWatch;
@@ -50,6 +43,7 @@ public class Cfmap {
 		return ref;
 	}
 
+	
 	private ArrayList<String> fromStringArray(String hosts[]) {
 		ArrayList<String> result = new ArrayList<String>();
 		for (int i = 0; i < hosts.length; i++) {
@@ -124,12 +118,27 @@ public class Cfmap {
 		workingCassandraHostList = cassandraHostList;
 	}
 
+	/*
+	 * protected void dumpEverything_1() throws Exception { CassandraClientPool
+	 * pool = CassandraClientPoolFactory.INSTANCE.get(); StopWatch stopWatch =
+	 * new LoggingStopWatch("TimeToGetClient"); CassandraClient client =
+	 * pool.borrowClient(workingCassandraHostList); stopWatch.stop(); try {
+	 * updatehostlist(client, stopWatch.getElapsedTime());
+	 * 
+	 * List<String> keyspaces = client.getKeyspaces(); Iterator<String>
+	 * keyspace_iterator = keyspaces.iterator(); Keyspace keyspace; while
+	 * (keyspace_iterator.hasNext()) { String keyspace_name =
+	 * keyspace_iterator.next(); keyspace = client.getKeyspace(keyspace_name,
+	 * ConsistencyLevel.ONE); } } catch (Exception e) {
+	 * 
+	 * } finally { pool.releaseClient(client); } }
+	 */
 	protected ArrayList<String> getAllReverseRowsFor(String zonename, String rowkey) throws Exception {
 		ArrayList<String> rowkeys;
 		CassandraClientPool pool = null;
 		CassandraClient client = null;
 		Keyspace keyspace = null;
-		//String zonename=getZoneName("",z);
+		// String zonename=getZoneName("",z);
 		try {
 			pool = CassandraClientPoolFactory.INSTANCE.get();
 			if (pool == null) {
@@ -142,6 +151,7 @@ public class Cfmap {
 			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient1");
 			try {
 				client = pool.borrowClient(workingCassandraHostList);
+
 				System.out.println(client.getIp());
 			} catch (NullPointerException e) {
 				workingCassandraHostList = cassandraHostList;
@@ -304,7 +314,7 @@ public class Cfmap {
 			if (host.startsWith("stats_host_") || (host.startsWith("updatefeed"))) {
 				clearOldHistory(zonename, "history", 5000, host, 3600 * 24);
 			} else {
-				clearOldHistory(zonename, "history", 5000, host, 3600 * 24 * 365);
+				clearOldHistory(zonename, "history", 5000, host, 3600 * 24 * 7);
 			}
 		}
 	}
@@ -371,17 +381,17 @@ public class Cfmap {
 		return null;
 	}
 
-	public HashMap<String, List<Column>> getHostsPropertiesColumns(String z,
-			HashMap<String, String> requirements) throws Exception {
-		String zonename=getZoneName("",z);
+	public HashMap<String, List<Column>> getHostsPropertiesColumns(String z, HashMap<String, String> requirements)
+			throws Exception {
+		String zonename = getZoneName("", z);
 		HashMap<String, List<Column>> combined = new HashMap<String, List<Column>>();
-		//CassandraClient rClient = null;
+		// CassandraClient rClient = null;
 		if (requirements.size() > 0) {
 			String property = requirements.keySet().iterator().next();
 			String value = requirements.get(property);
 			ArrayList<String> keys = getAllReverseRowsFor(zonename, property + "__" + value);
-			//long start = System.currentTimeMillis();
-			//long total = 0;
+			// long start = System.currentTimeMillis();
+			// long total = 0;
 			for (int j = 0; j < keys.size(); j++) {
 				try {
 					List<Column> host_properties = getRawColumns(zonename, "forward", keys.get(j));
@@ -638,6 +648,7 @@ public class Cfmap {
 			}
 			keyspace = client.getKeyspace(zonename, ConsistencyLevel.ONE);
 
+			// Keyspace keyspace = client.getKeyspace(zonename);
 			SlicePredicate predicate = new SlicePredicate();
 			List<byte[]> columnlist = new ArrayList<byte[]>();
 			columnlist.add(attribute.getBytes());
@@ -811,22 +822,6 @@ public class Cfmap {
 								cp.setColumn(column.name);
 								keyspace_delete.remove(rowkey, cp);
 								deleted++;
-								// System.out.println(" Deleting " + column.name
-								// + " - " + colname + " - " + rowkey + " "
-								// + columntime + " : " + starttimestamp);
-
-								/*
-								 * ColumnPath cp = new ColumnPath(table); //
-								 * "history"
-								 * cp.setSuper_column(rowkey.getBytes());
-								 * cp.setColumn(column.name);
-								 * keyspace_delete.remove(rowkey, cp);
-								 * deleted++; System.out.println(" Deleting " +
-								 * column.name + " - " + colname + " - " +
-								 * rowkey + " " + columntime + " : " +
-								 * starttimestamp);
-								 */
-
 							}
 						}
 					}
@@ -1248,3 +1243,4 @@ public class Cfmap {
 	}
 
 }
+

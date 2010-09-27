@@ -69,6 +69,7 @@ public class CfmapProp {
 					}
 				}
 			}
+			cols_present.add(property);
 			return properties.get(property);
 		} else {
 			return "-";
@@ -88,6 +89,8 @@ public class CfmapProp {
 		}
 		return result;
 	}
+
+	public ArrayList<String> cols_present = new ArrayList<String>();
 
 	public String toHtmlTableRow(String[] cols, String url) {
 		String status = prop("status");
@@ -136,8 +139,12 @@ public class CfmapProp {
 					found = true;
 				}
 				if (!found) {
-					result = result + "<td><a href='" + url + "&"+col+"=" + prop(col) + "'>" + prop(col)
-							+ "</a></td>";
+					if ((!col.equals("checked")) || ((!prop("status").equals("deployed")))) {
+						result = result + "<td><a href='" + url + "&" + col + "=" + prop(col) + "'>" + prop(col)
+								+ "</a></td>";
+					}else{
+						result=result+"<td>-</td>";
+					}
 				}
 			}
 			result = result + "</tr>";
