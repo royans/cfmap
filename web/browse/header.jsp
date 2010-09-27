@@ -220,7 +220,7 @@ blockquote {
 <table>
 	<tr>
 		<!-- <td><a href='/cfmap/browse/searchform.jsp'>Search</a></td> -->
-		<td><a href='/cfmap/browse/view.jsp?z=dev&f=html'>Home</a></td>
+		<td><a href='/cfmap/browse/view.jsp?z=dev&f=html'>Home</a>  <a href='http://code.google.com/p/cfmap/'>About</a></td>
 		<!-- <td>,<a href='/cfmap/browse/realtime.jsp'>Logs</a></td> -->
 		<!-- <td>,<a href='/cfmap/browse/view.jsp?z=dev&f=html&status=broken'>Broken</a>]</td> -->
 	</tr>
