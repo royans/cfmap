@@ -28,12 +28,11 @@
 
 <table style='width: 100%;'>
 	<tr>
-		<td style='text-align: right; padding-right: 20px;'>
-		<div style='width: 90%;' id='slickbox'>slick</div>
-		</td>
-		<td style="width: 100px;"'><a href='#'
-			OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
-
+		<!--
+		<td style='text-align: right; padding-right: 20px;'> <div style='width: 90%;' id='slickbox'>slick</div> </td>
+		<td style="width: 100px;"><a href='#' OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
+		-->
+		<td></td>
 	</tr>
 </table>
 <%
