@@ -964,7 +964,7 @@ public class Cfmap {
 
 					keyspace = client.getKeyspace(zonename, ConsistencyLevel.ZERO);
 
-					properties.put("_type", "apps");
+					properties.put("type", "app");
 					Iterator<String> keys = properties.keySet().iterator();
 					String rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
 							.get("appname"));

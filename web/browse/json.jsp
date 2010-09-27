@@ -28,7 +28,7 @@
 			String ipaddr = request.getRemoteAddr();
 
 			if (find.size() == 0) {
-				find.put("_type", "apps");
+				find.put("type", "app");
 			}
 
 			Iterator<String> hosts = t.getHosts(ipaddr, zone, find).iterator();

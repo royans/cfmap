@@ -65,7 +65,7 @@
 			String zone = request.getParameter("z");
 			String ipaddr = request.getRemoteAddr();
 			if (find.size() == 0) {
-				find.put("_type", "apps");
+				find.put("type", "app");
 			}
 			ArrayList<String> cols_present=new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
