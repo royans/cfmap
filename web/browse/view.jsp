@@ -148,8 +148,9 @@
 					}
 					out.println("</tr>");
 				} else {
-					out
-							.println("<tr><th>Del</th><th>Dep</th><th>Host:Port</th><th>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th>Version</th><th>url</th></tr>");
+					out.println("<tr><th>Del</th><th title='deployed_date'>Dep</th><th title='key'>Host:Port</th><th title='host'>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th title='version'>Version</th><th>url</th></tr>");
+
+					//out.println("<tr><th>Del</th><th>Dep</th><th>Host:Port</th><th>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th>Version</th><th>url</th></tr>");
 				}
 				out.println(s);
 				out.println("<tr><td colspan=20>");
