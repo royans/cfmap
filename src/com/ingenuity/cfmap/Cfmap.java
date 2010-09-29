@@ -973,6 +973,7 @@ public class Cfmap {
 					} else {
 						rowkey = properties.get("key");
 					}
+					properties.remove("key");
 
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
 					if ((oldProperties != null) && (oldProperties.size() > 0)) {
