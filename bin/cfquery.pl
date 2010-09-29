@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 use Getopt::Std;
+use POSIX;
+$defaulturl="http://webtrace.info/cfmap";
 %options=();
 getopts("u:c:p:k:t:h",\%options);
-
-
 
 sub getExec(){
 	my ($e)=@_;
@@ -14,15 +14,32 @@ sub getExec(){
         return $o;
 }
 
-sub getHostName(){
-	return &getExec("/bin/hostname");
+#0.29 0.12 0.03 1/269 25193
+
+sub getHostName(){ return &getExec("/bin/hostname"); }
+sub getKernelVersion(){ return &getExec("/bin/uname --kernel-release"); }
+sub getTotalMem(){ return &getExec('cat /proc/meminfo | grep ^MemTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getFreeMem(){ return &getExec('cat /proc/meminfo | grep ^MemFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getTotalSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getFreeSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getLoadAvg1m(){ return &getExec('cat /proc/loadavg | awk \'{print $1 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getLoadAvg5m(){ return &getExec('cat /proc/loadavg | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+
+sub getSystemInfo(){
+    $hash{version}=&getKernelVersion();
+    $hash{appname}="os";
+    $hash{type}="host";
+    $hash{stats_host_totalmem}=floor(&getTotalMem());
+    $hash{stats_host_freemem}=floor(&getFreeMem());
+    $hash{stats_host_totalswap}=floor(&getTotalSwap());
+    $hash{stats_host_freeswap}=floor(&getFreeSwap());
+    $hash{stats_host_loadavg1m}=floor(&getLoadAvg1m());
+    $hash{stats_host_loadavg5m}=floor(&getLoadAvg5m());
+    $hash{stats_host_loadavg15m}=floor(&getLoadAvg15m());
+    $hash{stats_host_loadavgentities}=floor(&getLoadAvgEntities());
 }
-
-sub getKernelVersion(){
-	return &getExec("/bin/uname --kernel-release");
-}
-
-
 
 #============================================================================
 # initialize
@@ -54,24 +71,24 @@ if (defined $options{p}) {
         }
 }
 
-#if ( !exists $hash{key} ){
-#        $hash{key}=$hash{host}."__".$hash{port}."__".$hash{appname};
-#}
-
 if ( !exists $hash{type} ){
 	if (!exists $hash{appname}){
+	    &getSystemInfo();
 	    $hash{type}="host";
 	    if (!exists $hash{version}){
 		    $hash{version}=&getKernelVersion();
 	    }
-	    $hash{appname}="os";
 	}else{
 	    $hash{type}="app";
 	}
 }
 if ( !defined $cfmapurl ){
-        $cfmapurl="http://webtrace.info/cfmap";
+        $cfmapurl=$defaulturl;
         #$cfmapurl="http://cfmap.ingenuity.com:8083/cfmap";
+}
+
+if ( !defined $command ){
+	$command='add';
 }
 
 die "help\n" if defined $options{h};
