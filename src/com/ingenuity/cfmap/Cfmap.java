@@ -963,7 +963,9 @@ public class Cfmap {
 
 					keyspace = client.getKeyspace(zonename, ConsistencyLevel.ZERO);
 
-					properties.put("type", "app");
+					if (!properties.containsKey("type")) {
+						properties.put("type", "app");
+					}
 					Iterator<String> keys = properties.keySet().iterator();
 					String rowkey_raw = "";
 					if (!(properties.containsKey("key") && properties.get("key").length() > 1)) {
