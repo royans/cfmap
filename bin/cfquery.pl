@@ -26,6 +26,7 @@ sub getLoadAvg1m(){ return &getExec('cat /proc/loadavg | awk \'{print $1 }\' | p
 sub getLoadAvg5m(){ return &getExec('cat /proc/loadavg | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getStartDate(){ return &getExec('A=`cat /proc/uptime | cut -d\' \' -f1 | cut -d\'.\' -f1`;B=`date +\'%s\'`;C=$((B-A));echo $C');}
 
 sub getSystemInfo(){
     $hash{version}=&getKernelVersion();
@@ -39,6 +40,7 @@ sub getSystemInfo(){
     $hash{stats_host_loadavg5m}=floor(&getLoadAvg5m());
     $hash{stats_host_loadavg15m}=floor(&getLoadAvg15m());
     $hash{stats_host_loadavgentities}=floor(&getLoadAvgEntities());
+    $hash{deployed_date}=&getStartDate();
 }
 
 #============================================================================
