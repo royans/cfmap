@@ -57,10 +57,12 @@ public class CfmapProp {
 		}
 		return result;
 	}
-
 	public String prop(String property) {
+		return prop(property,true);
+	}
+	public String prop(String property, boolean format) {
 		if (properties.containsKey(property)) {
-			if (property.equals("deployed_date") || property.equals("checked")) {
+			if ((property.equals("deployed_date") || property.equals("checked")) && (format = true)) {
 				if (property.equals("deployed_date")) {
 					return toRelativeDate(properties.get(property), 8640000, 25920000);
 				} else {
@@ -131,19 +133,24 @@ public class CfmapProp {
 				}
 				if (col.equals("key")) {
 					result = result + "<td> <a href='/cfmap/browse/viewrecord.jsp?key=" + key + "&z=" + zone + "'>"
-							+ prop("host") + ":" + prop("port") + "</a></td>";
+							+ prop("host",false) + ":" + prop("port",false) + "</a></td>";
 					found = true;
 				}
 				if (col.contains("stats_")) {
 					result = result + "<td>" + prop(col) + "</td>";
 					found = true;
 				}
+				if (col.contains("checked")) {
+					result = result + "<td>" + prop(col) + "</td>";
+					found = true;
+				}
+
 				if (!found) {
-					if ((!col.equals("checked")) || ((!prop("status").equals("deployed")))) {
-						result = result + "<td><a href='" + url + "&" + col + "=" + prop(col) + "'>" + prop(col)
+					if (((!prop("status").equals("deployed")))) {
+						result = result + "<td><a href='" + url + "&" + col + "=" + prop(col,false) + "'>" + prop(col)
 								+ "</a></td>";
-					}else{
-						result=result+"<td>-</td>";
+					} else {
+						result = result + "<td>-</td>";
 					}
 				}
 			}
@@ -152,11 +159,11 @@ public class CfmapProp {
 			result = "<tr><td><a href='/cfmap/browse/deletereally.jsp?key=" + key + "&z=" + zone + "'>x</a>"
 					+ "</td><td>" + prop("deployed_date") + "</td><td> <a href='/cfmap/browse/viewrecord.jsp?key="
 					+ key + "&z=" + zone + "'>" + prop("host") + ":" + prop("port") + "</a></td> <td> <a href='" + url
-					+ "&host=" + prop("host") + "'>" + prop("host") + "</a></td><td>" + status + "</td><td><a href='"
-					+ url + "&appname=" + prop("appname") + "'>" + prop("appname") + "</a></td><td >" + prop("checked")
-					+ "</td><td><a href='" + url + "&zonename=" + prop("zonename") + "'>" + prop("zonename")
-					+ "</a></td><td><a href='" + url + "&appnamedir=" + prop("appnamedir") + "'>" + prop("appnamedir")
-					+ "</a></td><td><a href='" + url + "&clustername=" + prop("clustername") + "'>"
+					+ "&host=" + prop("host",false) + "'>" + prop("host") + "</a></td><td>" + status + "</td><td><a href='"
+					+ url + "&appname=" + prop("appname",false) + "'>" + prop("appname") + "</a></td><td >" + prop("checked")
+					+ "</td><td><a href='" + url + "&zonename=" + prop("zonename",false) + "'>" + prop("zonename")
+					+ "</a></td><td><a href='" + url + "&appnamedir=" + prop("appnamedir",false) + "'>" + prop("appnamedir")
+					+ "</a></td><td><a href='" + url + "&clustername=" + prop("clustername",false) + "'>"
 					+ prop("clustername") + "</a></td><td>" + prop("stats_host_ps-count") + "</td><td><center>"
 					+ prop("stats_host_netstat-est") + "</center></td><td>" + prop("stats_host_load-avg")
 					+ "</td><td><center>" + prop("stats_host_freemem") + "</center></td><td>"
