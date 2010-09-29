@@ -966,7 +966,7 @@ public class Cfmap {
 					properties.put("type", "app");
 					Iterator<String> keys = properties.keySet().iterator();
 					String rowkey_raw = "";
-					if (!properties.containsKey("key") && properties.get("key").length() > 1) {
+					if (!(properties.containsKey("key") && properties.get("key").length() > 1)) {
 						rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
 								.get("appname"));
 						rowkey = getMD5(rowkey_raw);
