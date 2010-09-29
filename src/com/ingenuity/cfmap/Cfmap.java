@@ -43,7 +43,6 @@ public class Cfmap {
 		return ref;
 	}
 
-	
 	private ArrayList<String> fromStringArray(String hosts[]) {
 		ArrayList<String> result = new ArrayList<String>();
 		for (int i = 0; i < hosts.length; i++) {
@@ -966,9 +965,14 @@ public class Cfmap {
 
 					properties.put("type", "app");
 					Iterator<String> keys = properties.keySet().iterator();
-					String rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
-							.get("appname"));
-					rowkey = getMD5(rowkey_raw);
+					String rowkey_raw = "";
+					if (!properties.containsKey("key") && properties.get("key").length() > 1) {
+						rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
+								.get("appname"));
+						rowkey = getMD5(rowkey_raw);
+					} else {
+						rowkey = properties.get("key");
+					}
 
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
 					if ((oldProperties != null) && (oldProperties.size() > 0)) {
