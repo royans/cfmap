@@ -43,9 +43,7 @@
 
 		if ((map.containsKey("host") && map.containsKey("port") && map.containsKey("appname"))
 				|| (map.containsKey("key"))) {
-			out.println("rkt:1");
 			out.println(t.insertandinvert(ipaddr, z, map));
-			out.println("rkt:2");
 		} else {
 			out.println("Host/port/appname not specified");
 		}
