@@ -147,6 +147,8 @@
 							} else {
 								out.println("<th>" + col + "</th>");
 							}
+						}else{							
+							out.println("<th>" + col + "</th>");
 						}
 					}
 					out.println("</tr>");
