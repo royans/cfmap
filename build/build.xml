@@ -80,7 +80,8 @@
       <!-- copy the config files -->
       <copy file="${resources.dir}/MANIFEST.MF" tofile="${temp.dir.meta-inf}/MANIFEST.MF" overwrite="true" />
       <copy file="${resources.dir}/web.xml" tofile="${temp.dir.web-inf}/web.xml" overwrite="true" />
-      <copy file="${resources.dir}/messages.properties" tofile="${temp.dir.classes}/messages.properties" overwrite="true" />
+      <copy file="${resources.dir}/cfmap.properties" tofile="${temp.dir.classes}/cfmap.properties" overwrite="true" />
+      <copy file="${resources.dir}/cfmap.properties" tofile="${dest.dir}/conf/cfmap.properties" overwrite="true" />
 
       <copy todir="${temp.dir.classes}">
         <fileset dir="${src.dir}">
