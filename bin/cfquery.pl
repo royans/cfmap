@@ -3,7 +3,7 @@ use Getopt::Std;
 use POSIX;
 use LWP::Simple qw($ua get);
 $cfqversion=1.1;
-$passkey="unset";
+$userid="unset";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
@@ -12,7 +12,7 @@ getopts("u:c:p:k:t:h",\%options);
 
 sub init(){
     $ua->timeout(4);
-    if ($passkey!="unset"){ $hash{passkey}=$passkey;}
+    if ($userid!="unset"){ $hash{userid}=$userid;}
 }
 
 sub getExec(){
