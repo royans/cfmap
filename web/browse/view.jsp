@@ -25,7 +25,7 @@
 <jsp:include page="/browse/header.jsp" />
 
 <script src="/cfmap/browse/jquery/jquery.min.js"></script>
-
+<!--
 <table style='width: 100%;'>
 	<tr>
 		<td style='text-align: right; padding-right: 20px;'>
@@ -36,6 +36,7 @@
 
 	</tr>
 </table>
+-->
 <%
 	//<a href='javascript:$("#preferences").toggle("slow");'>Preferences</a>
 	}
