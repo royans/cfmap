@@ -2,14 +2,18 @@
 use Getopt::Std;
 use POSIX;
 use LWP::Simple qw($ua get);
-$cfqversion=1;
-
-$ua->timeout(4);
-
+$cfqversion=1.1;
+$passkey="unset";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
 getopts("u:c:p:k:t:h",\%options);
+
+
+sub init(){
+    $ua->timeout(4);
+    if ($passkey!="unset"){ $hash{passkey}=$passkey;}
+}
 
 sub getExec(){
 	my ($e)=@_;
@@ -21,6 +25,8 @@ sub getExec(){
 }
 
 sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../deployment.spec | grep cfmap_monitor_host | cut -d'=' -f2 ; fi");}
+
+init();
 $defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";}
 
 sub getHostName(){ return &getExec("/bin/hostname"); }
