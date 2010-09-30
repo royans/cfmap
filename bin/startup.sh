@@ -8,9 +8,9 @@ LOG=$BASE/logs
 #source $CONF > /dev/null 2> /dev/null
 
 cfmap_port=`cat $CONF | grep ^cfmap_port= | cut -d'=' -f2 | sed -e's/\r//g' | sed -e's/\n//g'`
-cassandra_servers=`cat $CONF | grep ^cassandra_servers= | cut -d'=' -f2`
-cassandra_http_port=`cat $CONF | grep ^cassandra_http_port= | cut -d'=' -f2`
-cassandra_jmx_port=`cat $CONF | grep ^cassandra_jmx_port= | cut -d'=' -f2`
+cassandra_servers=`cat $CONF | grep ^cassandra_servers= | cut -d'=' -f2  | sed -e's/\r//g' | sed -e's/\n//g'`
+cassandra_http_port=`cat $CONF | grep ^cassandra_http_port= | cut -d'=' -f2  | sed -e's/\r//g' | sed -e's/\n//g'`
+cassandra_jmx_port=`cat $CONF | grep ^cassandra_jmx_port= | cut -d'=' -f2  | sed -e's/\r//g' | sed -e's/\n//g'`
 
 mkdir -p $LOG
 
