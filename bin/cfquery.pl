@@ -2,7 +2,10 @@
 use Getopt::Std;
 use POSIX;
 use LWP::Simple qw($ua get);
+$cfqversion=1;
+
 $ua->timeout(4);
+
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
@@ -32,6 +35,7 @@ sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | 
 sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getStartDate(){ return &getExec('A=`cat /proc/uptime | cut -d\' \' -f1 | cut -d\'.\' -f1`;B=`date +\'%s\'`;C=$((B-A));echo $C');}
 
+$hash{cfqversion}=$cfqversion;
 sub getSystemInfo(){
     $hash{version}=&getKernelVersion();
     $hash{appname}="os";
