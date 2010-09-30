@@ -13,6 +13,11 @@ if [ "$cassandra_servers" == "localhost" ]
 then
     cassandra_servers=`hostname`
 fi
+if [ "$cassandra_servers" == "" ]
+then
+    cassandra_servers=`hostname`
+fi
+
 cassandra_http_port=`cat $CONF | grep ^cassandra_http_port= | cut -d'=' -f2  | sed -e's/\r//g' | sed -e's/\n//g'`
 cassandra_jmx_port=`cat $CONF | grep ^cassandra_jmx_port= | cut -d'=' -f2  | sed -e's/\r//g' | sed -e's/\n//g'`
 
