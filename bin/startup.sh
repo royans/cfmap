@@ -5,7 +5,12 @@ cd `dirname $0`
 BASE=`pwd`/..
 CONF=$BASE/conf/cfmap.properties
 LOG=$BASE/logs
-source $CONF
+#source $CONF > /dev/null 2> /dev/null
+
+cfmap_port=`cat $CONF | grep ^cfmap_port= | cut -d'=' -f2 | sed -e's/\r//g' | sed -e's/\n//g'`
+cassandra_servers=`cat $CONF | grep ^cassandra_servers= | cut -d'=' -f2`
+cassandra_http_port=`cat $CONF | grep ^cassandra_http_port= | cut -d'=' -f2`
+cassandra_jmx_port=`cat $CONF | grep ^cassandra_jmx_port= | cut -d'=' -f2`
 
 mkdir -p $LOG
 
@@ -23,7 +28,7 @@ then
     chmod +x $BASE/cassandra/bin/cassandra
     nohup $BASE/cassandra/bin/cassandra start & > /dev/null 2> /dev/null 
     _PID1=$!
-    nohup java -jar $BASE/lib/jetty-runner.jar --port $cfmap_port --out $BASE/logs/jetty.out --log $BASE/logs/jetty.log --path /cfmap $BASE/lib/cfmap.war  & > /dev/null 2> /dev/null
+    java -jar $BASE/lib/jetty-runner.jar --port $cfmap_port --out $BASE/logs/jetty.out --log $BASE/logs/jetty.log --path /cfmap $BASE/lib/cfmap.war 
     _PID2=$!
 
     echo "$_PID1 $_PID2" > $LOG/running.pid
