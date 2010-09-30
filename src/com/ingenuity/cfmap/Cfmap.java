@@ -54,19 +54,28 @@ public class Cfmap {
 	private synchronized void init() throws IllegalStateException, PoolExhaustedException, Exception {
 		System.out.println("initializing..");
 		hostlist = new ArrayList<String>();
-		hostlist.add("127.0.0.1");
 		this.port = 9160;
-		if (Messages.getString("com.ingenuity.cfmap.hosts") != null) {
+		if ((Messages.getString("com.ingenuity.cfmap.hosts") != null)
+				&& (Messages.getString("com.ingenuity.cfmap.hosts").length() > 0)) {
 			hostlist = fromStringArray(Messages.getString("com.ingenuity.cfmap.hosts").split(","));
-			System.out.println("Host set : " + hostlist.get(0));
+		} else {
+			try{
+			InetAddress addr = InetAddress.getLocalHost();
+			hostlist.add(addr.getHostName());
+			}catch(Exception e){}
 		}
-		if (Messages.getString("com.ingenuity.cfmap.port") != null) {
+		if (hostlist.size()==0){
+			hostlist.add("127.0.0.1");
+		}
+		System.out.println("Host set : " + hostlist.get(0));
+		if ((Messages.getString("com.ingenuity.cfmap.port") != null)
+				&& (Messages.getString("com.ingenuity.cfmap.port").length()>0)) {
 			Integer port_ = Integer.getInteger(Messages.getString("com.ingenuity.cfmap.port"));
 			if (port_ != null) {
 				port = port_.intValue();
 			}
-			System.out.println("Port set : " + port);
 		}
+		System.out.println("Port set : " + port);
 		initCassandra();
 	}
 
