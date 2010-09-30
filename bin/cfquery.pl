@@ -1,6 +1,9 @@
 #!/usr/bin/perl
 use Getopt::Std;
 use POSIX;
+use LWP::Simple qw($ua get);
+$ua->timeout(4);
+
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
 getopts("u:c:p:k:t:h",\%options);
@@ -14,7 +17,8 @@ sub getExec(){
         return $o;
 }
 
-#0.29 0.12 0.03 1/269 25193
+sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../deployment.spec | grep cfmap_monitor_host | cut -d'=' -f2 ; fi");}
+$defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";}
 
 sub getHostName(){ return &getExec("/bin/hostname"); }
 sub getKernelVersion(){ return &getExec("/bin/uname --kernel-release"); }
@@ -113,7 +117,9 @@ foreach $k (keys %hash){
 
 if ( $command eq "add" ){
         $hash{c}="submit";
-        print "$url";
-        exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
+        #print "$url";
+	$result=get($url);
+	#print $result;
+        #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
 }
 
