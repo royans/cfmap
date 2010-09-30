@@ -5,16 +5,15 @@ use LWP::Simple qw($ua get);
 $cfqversion=1.1;
 
 # Set crypt to some random key. This would be the key to your private data.
-$crypt="";
+$crypt="public";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
 getopts("u:c:p:k:t:h",\%options);
 
-
 sub init(){
     $ua->timeout(4);
-    if ($crypt!="unset"){ $hash{crypt}=$crypt;}
+    if ($crypt!=""){ $hash{crypt}=$crypt;}
 }
 
 sub getExec(){
@@ -27,9 +26,8 @@ sub getExec(){
 }
 
 sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../deployment.spec | grep cfmap_monitor_host | cut -d'=' -f2 ; fi");}
-
+$defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";if ($defaulturl=~/ingenuity.com/) {$crypt="";} }
 init();
-$defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";}
 
 sub getHostName(){ return &getExec("/bin/hostname"); }
 sub getKernelVersion(){ return &getExec("/bin/uname --kernel-release"); }
