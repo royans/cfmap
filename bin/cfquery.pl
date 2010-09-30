@@ -3,7 +3,9 @@ use Getopt::Std;
 use POSIX;
 use LWP::Simple qw($ua get);
 $cfqversion=1.1;
-$crypt="unset";
+
+# Set crypt to some random key. This would be the key to your private data.
+$crypt="";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();

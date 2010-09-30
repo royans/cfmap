@@ -980,11 +980,17 @@ public class Cfmap {
 					if (!(properties.containsKey("key") && properties.get("key").length() > 1)) {
 						rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
 								.get("appname"));
+						if ((properties.get("crypt")!=null)&&(properties.get("crypt").length()>0)){
+							rowkey_raw=rowkey_raw+"__"+properties.get("crypt");
+						}
 						rowkey = getMD5(rowkey_raw);
+						System.out.println("Adding: "+rowkey);
 					} else {
 						rowkey = properties.get("key");
 					}
+
 					properties.remove("key");
+					//properties.remove("crypt");
 
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
 					if ((oldProperties != null) && (oldProperties.size() > 0)) {

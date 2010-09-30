@@ -40,7 +40,7 @@
 
 		String ipaddr = request.getRemoteAddr();
 		map.put("ip", ipaddr);
-
+		
 		if ((map.containsKey("host") && map.containsKey("port") && map.containsKey("appname"))
 				|| (map.containsKey("key"))) {
 			out.println(t.insertandinvert(ipaddr, z, map));

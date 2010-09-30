@@ -26,20 +26,6 @@
 
 <script src="/cfmap/browse/jquery/jquery.min.js"></script>
 
-<!--  
-<table style='width: 100%;'>
-	<tr>
-		<td style='text-align: right; padding-right: 20px;'>
-		<div style='width: 90%;' id='slickbox'>slick</div>
-		</td>
-		<td style="width: 100px;"><a href='#'
-			OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
-
-	</tr>
-</table>
--->
-
-
 <%
 	//<a href='javascript:$("#preferences").toggle("slow");'>Preferences</a>
 	}
@@ -74,6 +60,7 @@
 			}
 			ArrayList<String> cols_present = new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
+
 			if (format.equals("html")) {
 				Iterator<String> hosts = hostsProperties.keySet().iterator();
 				SortedMap<Long, String> properties_output = new TreeMap<Long, String>();
@@ -82,6 +69,7 @@
 				while (hosts.hasNext()) {
 					String host = hosts.next();
 					HashMap<String, String> properties = hostsProperties.get(host);
+					properties.remove("crypt");
 					try {
 						_clustername = properties.get("clustername");
 						_host = properties.get("host");
@@ -197,6 +185,7 @@
 				while (i.hasNext()) {
 					String k = i.next();
 					HashMap<String, String> map = hostsProperties.get(k);
+					map.remove("crypt");
 					if (map.containsKey("status")) {
 						total++;
 						if (map.get("status").equals("broken")) {
@@ -229,6 +218,13 @@
 				}
 			}
 			if (format.equals("j")) {
+				Iterator<String> hosts = hostsProperties.keySet().iterator();
+				while (hosts.hasNext()) {
+					String host = hosts.next();
+					HashMap<String, String> properties = hostsProperties.get(host);
+					properties.remove("crypt");
+					hostsProperties.put(host, properties);
+				}
 				JSONObject jsonObj = new JSONObject(hostsProperties);
 				out.println(jsonObj.toString());
 			}
@@ -237,6 +233,7 @@
 				while (hosts.hasNext()) {
 					String host = hosts.next();
 					HashMap<String, String> properties = hostsProperties.get(host);
+					properties.remove("crypt");
 					CfmapProp p = new CfmapProp(zone, host, properties);
 					out.println(p.toShell());
 				}
