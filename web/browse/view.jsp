@@ -25,7 +25,8 @@
 <jsp:include page="/browse/header.jsp" />
 
 <script src="/cfmap/browse/jquery/jquery.min.js"></script>
-<!--
+
+<!--  
 <table style='width: 100%;'>
 	<tr>
 		<td style='text-align: right; padding-right: 20px;'>
@@ -37,6 +38,8 @@
 	</tr>
 </table>
 -->
+
+
 <%
 	//<a href='javascript:$("#preferences").toggle("slow");'>Preferences</a>
 	}
@@ -69,7 +72,7 @@
 			if (find.size() == 0) {
 				find.put("type", "app");
 			}
-			ArrayList<String> cols_present=new ArrayList<String>();
+			ArrayList<String> cols_present = new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
 			if (format.equals("html")) {
 				Iterator<String> hosts = hostsProperties.keySet().iterator();
@@ -84,8 +87,8 @@
 						_host = properties.get("host");
 						_appname = properties.get("appname");
 						_zonename = properties.get("zonename");
-						if (properties.containsKey("stats_host_load-avg")){
-  						 _host_load = Float.parseFloat(properties.get("stats_host_load-avg"));
+						if (properties.containsKey("stats_host_load-avg")) {
+							_host_load = Float.parseFloat(properties.get("stats_host_load-avg"));
 						}
 						if (!clusterlist.contains(_clustername)) {
 							clusterlist.add(_clustername);
@@ -142,13 +145,13 @@
 						if (ss.length > 1) {
 							colname = ss[1];
 						}
-						if ((cols_present.contains(ss[0]) == true)||(ss[0].equals("key"))) {
+						if ((cols_present.contains(ss[0]) == true) || (ss[0].equals("key"))) {
 							if (ss.length > 1) {
 								out.println("<th>" + colname + "</th>");
 							} else {
 								out.println("<th>" + col + "</th>");
 							}
-						}else{							
+						} else {
 							out.println("<th>" + col + "</th>");
 						}
 					}
@@ -208,9 +211,9 @@
 						}
 					}
 				}
-				if (total == 0 ){
+				if (total == 0) {
 					out.println("not found");
-					response.sendRedirect("/cfmap/browse/theme/exclamation.png");					
+					response.sendRedirect("/cfmap/browse/theme/exclamation.png");
 				}
 				if ((total / 2) < failed) {
 					out.println("failed");
