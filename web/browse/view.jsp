@@ -28,10 +28,11 @@
 
 <table style='width: 100%;'>
 	<tr>
-		<!--
-		<td style='text-align: right; padding-right: 20px;'> <div style='width: 90%;' id='slickbox'>slick</div> </td>
-		<td style="width: 100px;"><a href='#' OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
-		-->
+		<td style='text-align: right; padding-right: 20px;'>
+		<div style='width: 90%;' id='slickbox'>slick</div>
+		</td>
+		<td style="width: 100px;"><a href='#'
+			OnClick='javascript:$("#slickbox").toggle("slow");'>Preferences</a></td>
 
 	</tr>
 </table>
@@ -82,7 +83,9 @@
 						_host = properties.get("host");
 						_appname = properties.get("appname");
 						_zonename = properties.get("zonename");
-						_host_load = Float.parseFloat(properties.get("stats_host_load-avg"));
+						if (properties.containsKey("stats_host_load-avg")){
+  						 _host_load = Float.parseFloat(properties.get("stats_host_load-avg"));
+						}
 						if (!clusterlist.contains(_clustername)) {
 							clusterlist.add(_clustername);
 						}
@@ -128,7 +131,7 @@
 					s = properties_output.get(i.next()) + s;
 				}
 
-				out.println("<table>");
+				out.println("<table id='view_table'>");
 				if (cols.length > 0) {
 					for (int j = 0; j < cols.length; j++) {
 
@@ -138,7 +141,7 @@
 						if (ss.length > 1) {
 							colname = ss[1];
 						}
-						if ((cols_present.contains(ss[0]) == true)||(ss[0].equals("key"))||(ss[0].equals("checked")) ) {
+						if ((cols_present.contains(ss[0]) == true)||(ss[0].equals("key"))) {
 							if (ss.length > 1) {
 								out.println("<th>" + colname + "</th>");
 							} else {
@@ -148,9 +151,8 @@
 					}
 					out.println("</tr>");
 				} else {
-					out.println("<tr><th>Del</th><th title='deployed_date'>Dep</th><th title='key'>Host:Port</th><th title='host'>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th title='version'>Version</th><th>url</th></tr>");
-
-					//out.println("<tr><th>Del</th><th>Dep</th><th>Host:Port</th><th>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th>Version</th><th>url</th></tr>");
+					out
+							.println("<tr><th>Del</th><th title='deployed_date'>Dep</th><th title='key'>Host:Port</th><th title='host'>Host</th><th>status</th><th>app</th><th>heartbeat</th><th>zone</th><th>appnamedir</th><th>cluster</th><th>ps</th><th>netstat</th><th>load</th><th>freemem</th><th>iowait</th><th title='version'>Version</th><th>url</th></tr>");
 				}
 				out.println(s);
 				out.println("<tr><td colspan=20>");
@@ -158,16 +160,11 @@
 					CfmapProp p = new CfmapProp(zone, null, null);
 					out
 							.println("<table style='width:100%;border-top:1px dotted gray;padding-top:10px;margin-top:10px;'>");
-
-							if (clusterlist.size()>0){
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Clusters ("
 							+ clusterlist.size()
 							+ ") </td><td>"
 							+ p.fromArrayToString(clusterlist, "clustername", request.getRequestURI() + "?"
 									+ request.getQueryString()) + "</td></tr>");
-							}
-
-							if (serverlist.size()>0){
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Hosts ("
 							+ serverlist.size()
 							+ ") - "
@@ -176,15 +173,11 @@
 							+ " load average </td><td>"
 							+ p.fromArrayToString(serverlist, "host", request.getRequestURI() + "?"
 									+ request.getQueryString()) + "</td></tr>");
-							}
-
-							if (apps.size()>0){
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Apps ("
 							+ apps.size()
 							+ ")</td><td>"
 							+ p.fromArrayToString(apps, "appname", request.getRequestURI() + "?"
 									+ request.getQueryString()) + "</td></tr>");
-							}
 					out.println("</table>");
 				}
 				out.println("</td></tr>");
