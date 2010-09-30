@@ -13,7 +13,8 @@ getopts("u:c:p:k:t:h",\%options);
 
 sub init(){
     $ua->timeout(4);
-    if ($crypt!=""){ $hash{crypt}=$crypt;}
+    if (!($crypt eq "")){ $hash{crypt}=$crypt;}
+    $hash{cfqversion}=$cfqversion;
 }
 
 sub getExec(){
@@ -29,6 +30,7 @@ sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../de
 $defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";if ($defaulturl=~/ingenuity.com/) {$crypt="";} }
 init();
 
+
 sub getHostName(){ return &getExec("/bin/hostname"); }
 sub getKernelVersion(){ return &getExec("/bin/uname --kernel-release"); }
 sub getTotalMem(){ return &getExec('cat /proc/meminfo | grep ^MemTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
@@ -41,7 +43,6 @@ sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | 
 sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getStartDate(){ return &getExec('A=`cat /proc/uptime | cut -d\' \' -f1 | cut -d\'.\' -f1`;B=`date +\'%s\'`;C=$((B-A));echo $C');}
 
-$hash{cfqversion}=$cfqversion;
 sub getSystemInfo(){
     $hash{version}=&getKernelVersion();
     $hash{appname}="os";
