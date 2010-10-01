@@ -36,8 +36,8 @@ public class Messages {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (MissingResourceException e) {
 			System.out.println("resource not found: " + key);
-			return '!' + key + '!';
-			// return null;
+			//return '!' + key + '!';
+			return null;
 		}
 	} // end method getString()
 

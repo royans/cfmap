@@ -13,11 +13,23 @@
 	if ((request.getParameter("f") != null) && (request.getParameter("f").equals("img"))) {
 		format = "img"; // shell
 	}
+	String type = "app";
+
+	if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
+		type = request.getParameter("type");
+	} else {
+		type = "app";
+	}
+
 	String[] cols;
 	if (request.getParameter("cols") != null) {
 		cols = request.getParameter("cols").split(",");
 	} else {
 		cols = new String[0];
+		String cols_from_config = Messages.getString("format_type_cols_" + type);
+		if (cols_from_config != null) {
+			cols = cols_from_config.split(",");
+		}
 	}
 	//	out.println(cols.length);
 	if (format.equals("html")) {
@@ -56,7 +68,7 @@
 			String zone = request.getParameter("z");
 			String ipaddr = request.getRemoteAddr();
 			if (find.size() == 0) {
-				find.put("type", "app");
+				find.put("type", type);
 			}
 			ArrayList<String> cols_present = new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
@@ -71,6 +83,7 @@
 					HashMap<String, String> properties = hostsProperties.get(host);
 					properties.remove("crypt");
 					try {
+
 						_clustername = properties.get("clustername");
 						_host = properties.get("host");
 						_appname = properties.get("appname");
