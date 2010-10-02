@@ -10,8 +10,10 @@
 				<td style='text-align: left;'><span style='text-align: left;'>
 				<h3>Interesting links you should visit</h3>
 				<ul>
-					<li><a href='/cfmap/browse/view.jsp?z=dev&f=html'>Click
-					Browse repository</a></li>
+					<li><a href='/cfmap/browse/view.jsp?z=dev&f=html&type=host'>Click
+					here to browse repository</a></li>
+					<li><a
+						href='http://code.google.com/p/cfmap/'>Opensource Cfmap</a></li>
 				</ul>
 				</span> <br>
 				</br>
@@ -19,8 +21,8 @@
 								<h3>What is it for ?</h3>
 				
 				<ul>
-					<li>Discover services</li>
-					<li>Publish services</li>
+					<li>Discover state</li>
+					<li>Publish state</li>
 					<li>Publish application health information</li>
 					<li>Publish application usage statistics</li>
 					<li>Deployment log - tracks what got deployed when and where</li>
@@ -33,3 +35,4 @@
 	</tr>
 </table>
 <jsp:include page="/browse/footer.jsp" />
+
