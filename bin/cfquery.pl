@@ -10,7 +10,7 @@ $crypt="public";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
-getopts("u:c:p:k:t:h",\%options);
+getopts("u:c:p:k:t:f:h",\%options);
 
 sub init(){
     $ua->timeout(4);
@@ -118,6 +118,7 @@ $command=$options{c} if defined $options{c};
 $cfmapurl=$options{u} if defined $options{u};
 $hash{key}=$options{k} if defined $options{k};
 $hash{type}=$options{t} if defined $options{t};
+$hash{f}=$options{f} if defined $options{f};
 
 #============================================================================
 # process input
@@ -157,8 +158,9 @@ if ( $command eq "add" ){
 }
 
 if ( $command eq "view" ){
-	$hash{f}="s";
+	$hash{f}="s" unless defined $hash{f};
 	my $url=&createViewUrl();
+	print $url;
         $result=get($url);
 	print($result);
 	#$result=get($url); #print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
