@@ -13,7 +13,11 @@
 	if ((request.getParameter("f") != null) && (request.getParameter("f").equals("img"))) {
 		format = "img"; // shell
 	}
-	String type = "app";
+
+	String type = Messages.getString("cfmap_default_type");
+	if (type == null) {
+		type = "app";
+	}
 
 	if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
 		type = request.getParameter("type");
