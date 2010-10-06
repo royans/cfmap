@@ -19,11 +19,11 @@
 		type = "app";
 	}
 
-	#if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
-	#	type = request.getParameter("type");
-	#} else {
-	#	type = "app";
-	#}
+	//if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
+	//	type = request.getParameter("type");
+	//} else {
+	//	type = "app";
+	//}
 
 	String[] cols;
 	if (request.getParameter("cols") != null) {
