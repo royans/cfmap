@@ -160,7 +160,7 @@ if ( $command eq "add" ){
 if ( $command eq "view" ){
 	$hash{f}="s" unless defined $hash{f};
 	my $url=&createViewUrl();
-	print $url;
+	#print $url;
         $result=get($url);
 	print($result);
 	#$result=get($url); #print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
