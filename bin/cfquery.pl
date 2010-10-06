@@ -2,7 +2,8 @@
 use Getopt::Std;
 use POSIX;
 use LWP::Simple qw($ua get);
-$cfqversion=1.1;
+$cfqversion=1.2.1;
+
 
 # Set crypt to some random key. This would be the key to your private data.
 $crypt="public";
@@ -13,9 +14,12 @@ getopts("u:c:p:k:t:h",\%options);
 
 sub init(){
     $ua->timeout(4);
-    if (!($crypt eq "")){ $hash{crypt}=$crypt;}
-    $hash{cfqversion}=$cfqversion;
+    if ( !defined $cfmapurl ){
+        $cfmapurl=$defaulturl;
+        #$cfmapurl="http://cfmap.ingenuity.com:8083/cfmap";
+    }
 }
+    
 
 sub getExec(){
 	my ($e)=@_;
@@ -59,7 +63,53 @@ sub getSystemInfo(){
     $hash{stats_host_estconn}=floor(&getESTCount());
     $hash{stats_host_pscount}=floor(&getPSCount());
     $hash{deployed_date}=&getStartDate();
+    $hash{version}=&getKernelVersion();
 }
+
+sub prepareUrl(){
+    my $url="";
+    foreach $k (keys %hash){
+        $hash{$k}=~s/\&//g;
+        $hash{$k}=~s/\'//g;
+        $hash{$k}=~s/\"//g;
+        $hash{$k}=~s/\;//g;
+        if (length($hash{$k})>0){
+                $url="$url&$k=$hash{$k}";
+        }
+    }
+    return $url;
+}
+
+
+sub createAddUrl(){
+    my $url=$cfmapurl."/browse/create.jsp?";
+
+    if ((!exists $hash{type})&&(!exists $hash{appname})){
+	&getSystemInfo();
+	$hash{type}="host";
+    }
+
+    $hash{crypt}=$crypt unless defined $hash{$crypt};
+    $hash{cfqversion}=$cfqversion;
+    $hash{host}=&getHostName() unless defined $hash{host};
+    $hash{port}="0" unless defined $hash{port};
+    $hash{z}="unset" unless defined $hash{z};
+    $hash{appname}="unknown" unless defined $hash{appname};
+    $hash{type}="app" unless defined $hash{type};
+    $hash{c}="submit" unless defined $hash{c};
+
+    my $final_url=$url.&prepareUrl();
+    return $final_url;
+}
+
+sub createViewUrl(){
+    my $url=$cfmapurl."/browse/view.jsp?";
+    $hash{z}="dev" unless defined $hash{z};
+    my $final_url=$url.&prepareUrl();
+    return $final_url;
+}
+
+
 
 #============================================================================
 # initialize
@@ -68,9 +118,6 @@ $command=$options{c} if defined $options{c};
 $cfmapurl=$options{u} if defined $options{u};
 $hash{key}=$options{k} if defined $options{k};
 $hash{type}=$options{t} if defined $options{t};
-$hash{host}=&getHostName();
-$hash{port}="0";
-$hash{zonename}="unset";
 
 #============================================================================
 # process input
@@ -82,7 +129,7 @@ if (defined $options{p}) {
         foreach my $param (@parameters){
                 my @s=split(/=/,$param);
                 my $found=0;
-                if (($s[0] eq "z") || ( $s[0] eq "zone" )){ $hash{zonename}=$s[1];$found=1; }
+                if (($s[0] eq "z") || ( $s[0] eq "zone" )){ $hash{z}=$s[1];$found=1; }
                 if (($s[0] eq "deployed")){ $hash{deployed_date}=$s[1];$found=1; }
                 if (($s[0] eq "hostname")){ $hash{host}=$s[1];$found=1; }
                 if ($found == 0){
@@ -91,24 +138,8 @@ if (defined $options{p}) {
         }
 }
 
-if ( !exists $hash{type} ){
-	if (!exists $hash{appname}){
-	    &getSystemInfo();
-	    $hash{type}="host";
-	    if (!exists $hash{version}){
-		    $hash{version}=&getKernelVersion();
-	    }
-	}else{
-	    $hash{type}="app";
-	}
-}
-if ( !defined $cfmapurl ){
-        $cfmapurl=$defaulturl;
-        #$cfmapurl="http://cfmap.ingenuity.com:8083/cfmap";
-}
-
 if ( !defined $command ){
-	$command='add';
+     $command='add';
 }
 
 die "help\n" if defined $options{h};
@@ -118,22 +149,19 @@ die "Unprocessed by Getopt::Std:\n" if $ARGV[0];
 # create url
 #============================================================================
 
-my $url=$cfmapurl."/browse/create.jsp?";
-foreach $k (keys %hash){
-        $hash{$k}=~s/\&//g;
-        $hash{$k}=~s/\'//g;
-        $hash{$k}=~s/\"//g;
-        $hash{$k}=~s/\;//g;
-        if (length($hash{$k})>0){
-                $url="$url&$k=$hash{$k}";
-        }
+if ( $command eq "add" ){
+	my $url=&createAddUrl();
+        #print "$url\n";
+	$result=get($url); 
+	#print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
 }
 
-if ( $command eq "add" ){
-        $hash{c}="submit";
-        #print "$url";
-	$result=get($url);
-	#print $result;
-        #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
+if ( $command eq "view" ){
+	$hash{f}="s";
+	my $url=&createViewUrl();
+        $result=get($url);
+	print($result);
+	#$result=get($url); #print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
 }
+
 
