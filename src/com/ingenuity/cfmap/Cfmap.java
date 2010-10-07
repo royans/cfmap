@@ -59,17 +59,18 @@ public class Cfmap {
 				&& (Messages.getString("com.ingenuity.cfmap.hosts").length() > 0)) {
 			hostlist = fromStringArray(Messages.getString("com.ingenuity.cfmap.hosts").split(","));
 		} else {
-			try{
-			InetAddress addr = InetAddress.getLocalHost();
-			hostlist.add(addr.getHostName());
-			}catch(Exception e){}
+			try {
+				InetAddress addr = InetAddress.getLocalHost();
+				hostlist.add(addr.getHostName());
+			} catch (Exception e) {
+			}
 		}
-		if (hostlist.size()==0){
+		if (hostlist.size() == 0) {
 			hostlist.add("127.0.0.1");
 		}
 		System.out.println("Host set : " + hostlist.get(0));
 		if ((Messages.getString("com.ingenuity.cfmap.port") != null)
-				&& (Messages.getString("com.ingenuity.cfmap.port").length()>0)) {
+				&& (Messages.getString("com.ingenuity.cfmap.port").length() > 0)) {
 			Integer port_ = Integer.getInteger(Messages.getString("com.ingenuity.cfmap.port"));
 			if (port_ != null) {
 				port = port_.intValue();
@@ -973,25 +974,29 @@ public class Cfmap {
 					keyspace = client.getKeyspace(zonename, ConsistencyLevel.ZERO);
 
 					if (!properties.containsKey("type")) {
-						properties.put("type", "app");
+						String type = Messages.getString("cfmap_default_type");
+						if (type == null) {
+							type = "app";
+						}
+						properties.put("type", type);
 					}
-					Iterator<String> keys = properties.keySet().iterator();
 					String rowkey_raw = "";
 					if (!(properties.containsKey("key") && properties.get("key").length() > 1)) {
 						rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
 								.get("appname"));
-						if ((properties.get("crypt")!=null)&&(properties.get("crypt").length()>0)){
-							rowkey_raw=rowkey_raw+"__"+properties.get("crypt");
+						if ((properties.get("crypt") != null) && (properties.get("crypt").length() > 0)) {
+							rowkey_raw = rowkey_raw + "__" + properties.get("crypt");
 						}
 						rowkey = getMD5(rowkey_raw);
-						System.out.println("Adding: "+rowkey);
+						System.out.println("Adding: " + rowkey);
 					} else {
 						rowkey = properties.get("key");
 					}
 
 					properties.remove("key");
-					//properties.remove("crypt");
+					// properties.remove("crypt");
 
+					Iterator<String> keys = properties.keySet().iterator();
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
 					if ((oldProperties != null) && (oldProperties.size() > 0)) {
 						updateHost(zonename, rowkey, properties, oldProperties, true);
@@ -1002,7 +1007,7 @@ public class Cfmap {
 						}
 					} else {
 						while (keys.hasNext()) {
-							String key = keys.next();
+							String key = (String) keys.next();
 							ColumnPath forward_cp = new ColumnPath("forward").setColumn((key).getBytes());
 							keyspace.insert(rowkey, forward_cp, properties.get(key).getBytes("UTF-8"));
 							ColumnPath reverse_cp = new ColumnPath("reverse").setColumn(rowkey.getBytes());
@@ -1019,11 +1024,12 @@ public class Cfmap {
 
 			} catch (NullPointerException e) {
 				workingCassandraHostList = cassandraHostList;
+				e.printStackTrace();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return rowkey;
+		return "Row inserted : " + rowkey;
 	}
 
 	// /===============================================================================================///
