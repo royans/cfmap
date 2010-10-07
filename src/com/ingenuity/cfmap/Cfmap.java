@@ -973,13 +973,6 @@ public class Cfmap {
 
 					keyspace = client.getKeyspace(zonename, ConsistencyLevel.ZERO);
 
-					if (!properties.containsKey("type")) {
-						String type = Messages.getString("cfmap_default_type");
-						if (type == null) {
-							type = "app";
-						}
-						properties.put("type", type);
-					}
 					String rowkey_raw = "";
 					if (!(properties.containsKey("key") && properties.get("key").length() > 1)) {
 						rowkey_raw = (properties.get("host") + "__" + properties.get("port") + "__" + properties
@@ -1006,6 +999,15 @@ public class Cfmap {
 									.get("port"), properties.get("clustername"), summaryChange);
 						}
 					} else {
+
+						if (!properties.containsKey("type")) {
+							String type = Messages.getString("cfmap_default_type");
+							if (type == null) {
+								type = "app";
+							}
+							properties.put("type", type);
+						}
+
 						while (keys.hasNext()) {
 							String key = (String) keys.next();
 							ColumnPath forward_cp = new ColumnPath("forward").setColumn((key).getBytes());
