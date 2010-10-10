@@ -34,8 +34,8 @@ sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../de
 $defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";if ($defaulturl=~/ingenuity.com/) {$crypt="";} }
 init();
 
-sub getHostName(){ return &getExec("/bin/hostname"); }
-sub getKernelVersion(){ return &getExec("/usr/bin/uname --kernel-release"); }
+sub getHostName(){ return &getExec("PATH=$PATH:/usr/bin:/usr/sbin:/bin:/sbin; export PATH;hostname"); }
+sub getKernelVersion(){ return &getExec("PATH=$PATH:/usr/bin:/usr/sbin:/bin:/sbin;uname --kernel-release"); }
 sub getTotalMem(){ return &getExec('cat /proc/meminfo | grep ^MemTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getFreeMem(){ return &getExec('cat /proc/meminfo | grep ^MemFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getTotalSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
