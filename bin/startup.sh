@@ -33,6 +33,7 @@ fi
 
 cp $BASE/conf/cassandra/* $BASE/cassandra/conf
 perl -p -i -e "s#/usr/local/ingenuity/cfmap/cassandra#$BASE/cassandra_data#g" $BASE/cassandra/conf/*
+perl -p -i -e "s#LOGFILELOCATION#$BASE/logs/cassandra-system.log#g" $BASE/cassandra/conf/*
 perl -p -i -e "s#CFMAP_INSERT_SEED_HERE#<Seed>$cassandra_servers</Seed>#g" $BASE/cassandra/conf/*
 
 if [ -d $BASE/cassandra_data ]
