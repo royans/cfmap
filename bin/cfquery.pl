@@ -35,7 +35,7 @@ $defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$de
 init();
 
 sub getHostName(){ return &getExec("/bin/hostname"); }
-sub getKernelVersion(){ return &getExec("/bin/uname --kernel-release"); }
+sub getKernelVersion(){ return &getExec("/usr/bin/uname --kernel-release"); }
 sub getTotalMem(){ return &getExec('cat /proc/meminfo | grep ^MemTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getFreeMem(){ return &getExec('cat /proc/meminfo | grep ^MemFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getTotalSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
@@ -64,6 +64,7 @@ sub getSystemInfo(){
     $hash{stats_host_pscount}=floor(&getPSCount());
     $hash{deployed_date}=&getStartDate();
     $hash{version}=&getKernelVersion();
+    $hash{username}="Jonah Was here";
 }
 
 sub prepareUrl(){
@@ -77,6 +78,7 @@ sub prepareUrl(){
                 $url="$url&$k=$hash{$k}";
         }
     }
+print "URL = $url\n";
     return $url;
 }
 
@@ -152,9 +154,7 @@ die "Unprocessed by Getopt::Std:\n" if $ARGV[0];
 
 if ( $command eq "add" ){
 	my $url=&createAddUrl();
-        #print "$url\n";
 	$result=get($url); 
-	#print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
 }
 
 if ( $command eq "view" ){
