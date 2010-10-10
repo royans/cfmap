@@ -23,12 +23,12 @@ cassandra_jmx_port=`grep ^cassandra_jmx_port= $CONF| cut -d'=' -f2 `
 
 if [ ! -d $LOG ]
 then
-	mkdir -p $LOG
+    mkdir -p $LOG
 fi
 
 if [ ! -d $BASE/cassandra_data ]
 then
-	mkdir $BASE/cassandra_data
+    mkdir $BASE/cassandra_data
 fi
 
 cp $BASE/conf/cassandra/* $BASE/cassandra/conf
@@ -37,15 +37,14 @@ perl -p -i -e "s#CFMAP_INSERT_SEED_HERE#<Seed>$cassandra_servers</Seed>#g" $BASE
 
 if [ -d $BASE/cassandra_data ]
 then
-	echo "Starting cassandra."
-    $BASE/cassandra/bin/cassandra -Dcom.sun.management.jmxremote.port=$cassandra_jmx_port start > $LOG/cassandra.log 2>&1  &
+    echo "Starting cassandra."
+    $BASE/cassandra/bin/cassandra -p $LOG/cassandra.pid -Dcom.sun.management.jmxremote.port=$cassandra_jmx_port start > $LOG/cassandra.log 2>&1  &
     _PID1=$!
-	echo "Starting cfmap server."
+
+    echo "Starting cfmap server."
     java -jar $BASE/lib/jetty-runner.jar --port $cfmap_port --out $BASE/logs/jetty.out --log $BASE/logs/jetty.log --path /cfmap $BASE/lib/cfmap.war >> $LOG/cfmap.log 2>&1 & 
     _PID2=$!
 
-    echo "$_PID1 $_PID2" > $LOG/running.pid  
-	echo "$_PID1" > $LOG/cassandra.pid
-	echo "$_PID2" > $LOG/cfmap.pid
+    echo "$_PID2" > $LOG/cfmap.pid
 fi
 
