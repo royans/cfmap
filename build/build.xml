@@ -121,6 +121,7 @@
 
 
       <copydir dest="${dest.dir}/cassandra" src="${binaries.dir}/cassandra" />
+      <chmod file="${dest.dir}/cassandra/bin/*" perm="ugo+x" />
 
       <copy todir="${dest.dir}/lib">
         <fileset dir="${binaries.dir}/lib/">
