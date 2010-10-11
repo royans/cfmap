@@ -6,4 +6,3 @@ CONF=$BASE/conf/cfmap.properties
 LOG=$BASE/logs
 PGREP=`which pgrep 2> /dev/null > /dev/null`
 PKILL=`which pkill 2> /dev/null > /dev/null`
-
