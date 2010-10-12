@@ -10,7 +10,7 @@ $crypt="public";
 
 $defaulturl="http://webtrace.info/cfmap";
 %options=();
-getopts("u:c:p:k:t:f:h",\%options);
+getopts("s:u:c:p:k:t:f:h",\%options);
 
 sub init(){
     $ua->timeout(4);

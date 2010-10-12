@@ -1,9 +1,10 @@
 #!/bin/bash
 
+#OSTYPE=`PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin;export PATH;uname`
 BASE0=`dirname $0`
 BASE=${BASE0}/..
-CONF=$BASE/conf/cfmap.properties
-LOG=$BASE/logs
+
+source $BASE/bin/env.sh
 
 cfmap_port=`grep ^cfmap_port= $CONF | cut -d'=' -f2 `
 cassandra_servers=`grep ^cassandra_servers= $CONF | cut -d'=' -f2 `
