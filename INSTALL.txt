@@ -3,6 +3,7 @@ Getting Started - How to setup your own cfmap cluster
 Requirements
 	Java 1.6
 	Jakarta Ant
+	Maven (mvn) if you need to install Jetty webserver, (recommended)
 	Cfmap comes with scripts to start on Linux, but you should be able to run it on pretty much any platform.
 	The standard install comes bundled with cassandra binaries, but you can use your own cluster if you already have one.
 	It also comes with Jetty webserver which again is optional if you want to use your own webserver.
