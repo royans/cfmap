@@ -34,24 +34,40 @@ sub getCfmapUrl(){ return &getExec("if [ -f ../deployment.spec ]; then cat ../de
 $defaulturl_ =&getCfmapUrl();if (length($defaulturl_)>0){$defaulturl="http://$defaulturl_:8083/cfmap";if ($defaulturl=~/ingenuity.com/) {$crypt="";} }
 init();
 
-sub getHostName(){ return &getExec("PATH=$PATH:/usr/bin:/usr/sbin:/bin:/sbin; export PATH;hostname"); }
-sub getKernelVersion(){ return &getExec("PATH=$PATH:/usr/bin:/usr/sbin:/bin:/sbin;uname --kernel-release"); }
+sub prepareMpstat(){$mpstat=&getExec("PATH=\$PATH:/usr/bin:/usr/sbin:/bin:/sbin; export PATH; mpstat | grep all | tail -1 | sed -e\'s/  / /g\' | sed -e\'s/  / /g\'| sed -e\'s/  / /g\'");}
+sub getCpuUser(){if (length($mpstat)>10){@mpstat=split(/ /,$mpstat);return $mpstat[3];}}
+sub getCpuIdle(){if (length($mpstat)>10){@mpstat=split(/ /,$mpstat);return $mpstat[10];}}
+sub getCpuSys(){if (length($mpstat)>10){@mpstat=split(/ /,$mpstat);return $mpstat[5];}}
+sub getCpuIowait(){if (length($mpstat)>10){@mpstat=split(/ /,$mpstat);return $mpstat[6];}}
+sub getCpuIntrS(){if (length($mpstat)>10){@mpstat=split(/ /,$mpstat);return $mpstat[11];}}
+
+sub getHostName(){ return &getExec("PATH=\$PATH:/usr/bin:/usr/sbin:/bin:/sbin; export PATH;hostname"); }
+sub getKernelVersion(){ return &getExec("PATH=\$PATH:/usr/bin:/usr/sbin:/bin:/sbin;uname --kernel-release"); }
 sub getTotalMem(){ return &getExec('cat /proc/meminfo | grep ^MemTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getFreeMem(){ return &getExec('cat /proc/meminfo | grep ^MemFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getTotalSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapTotal | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
 sub getFreeSwap(){ return &getExec('cat /proc/meminfo | grep ^SwapFree | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
-sub getLoadAvg1m(){ return &getExec('cat /proc/loadavg | awk \'{print $1 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
-sub getLoadAvg5m(){ return &getExec('cat /proc/loadavg | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
-sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
-sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;$a=$a/1024;print ($a);\''); }
+sub getLoadAvg1m(){ return &getExec('cat /proc/loadavg | awk \'{print $1 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;print ($a);\''); }
+sub getLoadAvg5m(){ return &getExec('cat /proc/loadavg | awk \'{print $2 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;print ($a);\''); }
+sub getLoadAvg15m(){ return &getExec('cat /proc/loadavg | awk \'{print $3 }\' | perl -e \'$a=<STDIN>;$a=~s/\n//g;print ($a);\''); }
+sub getLoadAvgEntities(){ return &getExec('cat /proc/loadavg | awk \'{print $4 }\' | cut -d\'/\' -f2 | perl -e \'$a=<STDIN>;$a=~s/\n//g;print ($a);\''); }
+sub getCpuBusy(){ return &getExec('cat /proc/uptime | perl -e\'while(<STDIN>){$_=~s/\n//g;@a=split(/ /,$_);print 100*($a[0]-$a[1])/$a[0];}\' | cut -d\'.\' -f1');}
 sub getStartDate(){$_d=&getExec('A=`cat /proc/uptime | cut -d\' \' -f1 | cut -d\'.\' -f1`;B=`date +\'%s\'`;C=$((B-A));echo $C'); $_dd=floor($_d/10)*10;  return $_dd;}
 sub getESTCount(){ return &getExec('netstat -na | grep -i established | wc -l');}
 sub getPSCount(){ return &getExec('ps -aef | wc -l');}
+sub getIOWait(){ return &getExec('sar 1 3 2> /dev/null | tail -1 | awk \'{print $6}\'');}
+
 
 sub getSystemInfo(){
     $hash{version}=&getKernelVersion();
     $hash{appname}="os";
     $hash{type}="host";
+    prepareMpstat();
+    $hash{stats_host_cpuuser}=floor(&getCpuUser());
+    $hash{stats_host_cpuidle}=floor(&getCpuIdle());
+    $hash{stats_host_cpusys}=floor(&getCpuSys());
+    $hash{stats_host_cpuiowait}=floor(&getCpuIowait());
+    $hash{stats_host_cpuintrs}=floor(&getCpuIntrS());
     $hash{stats_host_totalmem}=floor(&getTotalMem());
     $hash{stats_host_freemem}=floor(&getFreeMem());
     $hash{stats_host_totalswap}=floor(&getTotalSwap());
@@ -62,9 +78,11 @@ sub getSystemInfo(){
     $hash{stats_host_loadavgentities}=floor(&getLoadAvgEntities());
     $hash{stats_host_estconn}=floor(&getESTCount());
     $hash{stats_host_pscount}=floor(&getPSCount());
+    $hash{stats_host_iowait}=floor(&getIOWait());
+    $hash{stats_host_cpubusy}=floor(&getCpuBusy());
     $hash{deployed_date}=&getStartDate();
     $hash{version}=&getKernelVersion();
-    $hash{username}="Jonah Was here";
+    $hash{username}="cfmap_agent";
 }
 
 sub prepareUrl(){
@@ -162,7 +180,7 @@ if ( $command eq "view" ){
 	my $url=&createViewUrl();
 	#print $url;
         $result=get($url);
-	print($result);
+	#print($result);
 	#$result=get($url); #print $result; #exec("lynx -connect_timeout=5 --source '$url' > /dev/null 2> /dev/null");
 }
 
