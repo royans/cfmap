@@ -100,6 +100,7 @@
         <fileset dir="${bin.dir}">
           <include name="**/start*"/>
           <include name="**/shutdown*"/>
+          <include name="**/env*"/>
         </fileset>
       </copy>
 
