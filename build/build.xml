@@ -101,6 +101,7 @@
           <include name="**/start*"/>
           <include name="**/shutdown*"/>
           <include name="**/env*"/>
+          <include name="**/cfq*"/>
         </fileset>
       </copy>
 

@@ -84,6 +84,14 @@ public class CfmapProp {
 		}
 	}
 
+	public String fromArrayToGraphiteTarget(ArrayList<String> input,String parent,String child) {
+		String result = "";
+		for (int i = 0; i < input.size(); i++) {
+			result = result+"&target="+parent+"." + input.get(i)+"."+child;
+		}
+		return result;
+	}
+
 	public String fromArrayToString(ArrayList<String> input, String property, String url) {
 		String result = "";
 		for (int i = 0; i < input.size(); i++) {

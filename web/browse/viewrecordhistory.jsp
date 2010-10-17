@@ -28,14 +28,18 @@
 	}
 	try {
 		Cfmap t = Cfmap.getInstance();
-
 		if ((request.getParameter("z") != null)) {
 			String zone = request.getParameter("z");
 			if ((request.getParameter("key") != null)) {
 				String ipaddr = request.getRemoteAddr();
 				HashMap<String, String> map = t.getProperties(request.getRemoteAddr(), zone, "forward", request
 						.getParameter("key"));
-				HashMap<String, HashMap> result = t.getChanges(ipaddr, zone, request.getParameter("key"));
+				HashMap<String, HashMap> result = null;
+				try {
+					result = t.getChanges(ipaddr, zone, request.getParameter("key"));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				Iterator<String> i = result.keySet().iterator();
 				if (format.equals("html")) {
 					out.println("<table style='width:500px;'>");
@@ -65,7 +69,7 @@
 											+ key + "</td></tr><tr><td><table>\n");
 						}
 						TreeMap<Long, String> viewlog = new TreeMap<Long, String>();
-						TreeMap<Long,String> propertylist=new TreeMap<Long,String>();
+						TreeMap<Long, String> propertylist = new TreeMap<Long, String>();
 						while (ii.hasNext()) {
 							byte[] rowkey = ii.next();
 							java.util.UUID uuid_ = t.toUUID(rowkey);
@@ -81,7 +85,7 @@
 							long d_long = d.getTime();
 							viewlog.put(new Long(d_long), temp_output);
 							temp_output = "";
-							propertylist.put(new Long(d_long),(String)sm.get(rowkey));
+							propertylist.put(new Long(d_long), (String) sm.get(rowkey));
 						}
 
 						Iterator<Long> k = viewlog.keySet().iterator();
@@ -89,8 +93,8 @@
 							Long timeKey = k.next();
 							output = (viewlog.get(timeKey)) + output;
 						}
-						allProperties.put(key,propertylist);
-						
+						allProperties.put(key, propertylist);
+
 						out.println(output);
 						if (format.equals("html")) {
 							out.println("</table></td></tr>");
@@ -100,11 +104,23 @@
 				}
 				if (format.equals("html")) {
 					out.println("</table>");
-				} 
+				}
 
-				if (format.equals("j")){
+				if (format.equals("j")) {
 					JSONObject jsonObj = new JSONObject(allProperties);
 					out.println(jsonObj.toString());
+				}
+				if (format.equals("stats")) {
+					TreeMap<Long, String> info = allProperties.get("info");
+					Iterator<Long> ii = info.keySet().iterator();
+					while (ii.hasNext()) {
+						Long time = ii.next();
+						String s = info.get(time);
+						JSONObject jsonObj = new JSONObject(s);
+						if (jsonObj.has("clustername") && jsonObj.get("clustername").equals("stats")) {
+							out.println(jsonObj.get("info"));
+						}
+					}
 				}
 
 			}
@@ -120,4 +136,5 @@
 <%
 	}
 %>
+
 

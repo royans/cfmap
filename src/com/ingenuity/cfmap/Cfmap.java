@@ -221,11 +221,11 @@ public class Cfmap {
 		CassandraClient client = null;
 		Keyspace keyspace = null;
 		ArrayList<String> cleanuptables = new ArrayList<String>();
-		// System.out.println("rkt: inserting 4 ");
+		// System.out.println("rkt: updatehost 1");
 		try {
 			pool = CassandraClientPoolFactory.INSTANCE.get();
 
-			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient6");
 			try {
 				client = pool.borrowClient(workingCassandraHostList);
 			} catch (NullPointerException e) {
@@ -244,12 +244,12 @@ public class Cfmap {
 
 			String host = rowkey;
 			ColumnPath cp;
-			// System.out.println("rkt: inserting 5 ");
+			// System.out.println("rkt: updatehost 2");
 
 			if (((oldPropertylist != null) && (oldPropertylist.size() > 0)) || (rowkey.equals("updatefeed"))) {
 				Iterator<String> newPropertyIterator = newProperties.keySet().iterator();
 
-				// System.out.println("rkt: inserting 3 ");
+				// System.out.println("rkt: updatehost 3");
 				while (newPropertyIterator.hasNext()) {
 					String newProperty = newPropertyIterator.next();
 					String newValue = newProperties.get(newProperty);
@@ -273,6 +273,7 @@ public class Cfmap {
 						}
 					}
 					// System.out.println("rkt: inserting 2 " + changeRequired);
+					// System.out.println("rkt: updatehost 4 "+changeRequired);
 
 					if (changeRequired) {
 						if (!newProperty.startsWith("info_") && !newProperty.startsWith("stats_")
@@ -303,10 +304,13 @@ public class Cfmap {
 								cp.setColumn(timeuuid_encoded);
 								keyspace.insert("stats_host_" + oldPropertylist.get("host"), cp, newValue.getBytes());
 							}
+							// todo:this is where the code for statfeed insert
+							// goes
+							// System.out.println("rkt: updatehost 5");
 						}
 						cp = new ColumnPath("forward");
 						cp.setColumn((newProperty).getBytes());
-						System.out.println("rkt: inserting 1 " + newProperty + " " + newValue);
+						System.out.println("rkt: updatehost 6 " + rowkey + " : " + newProperty + " : " + newValue);
 						keyspace.insert(host, cp, newValue.getBytes());
 						changeRequired = true;
 					}
@@ -320,10 +324,11 @@ public class Cfmap {
 		Iterator<String> i = cleanuptables.iterator();
 		while (i.hasNext()) {
 			String host = i.next();
-			if (host.startsWith("stats_host_") || (host.startsWith("updatefeed"))) {
-				clearOldHistory(zonename, "history", 5000, host, 3600 * 24);
+			if (host.startsWith("stats_host_") || (host.equals("updatefeed"))) {
+				clearOldHistory(zonename, "history", 99, host, 3600 * 2);
+				System.out.println("|||| ---- Clearing some old history from " + host + " .. ");
 			} else {
-				clearOldHistory(zonename, "history", 5000, host, 3600 * 24 * 7);
+				clearOldHistory(zonename, "history", 99, host, 3600 * 24 * 7);
 			}
 		}
 	}
@@ -339,7 +344,7 @@ public class Cfmap {
 		Keyspace keyspace = null;
 		try {
 			pool = CassandraClientPoolFactory.INSTANCE.get();
-			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient5");
 			try {
 				client = pool.borrowClient(workingCassandraHostList);
 			} catch (NullPointerException e) {
@@ -644,7 +649,7 @@ public class Cfmap {
 			if (rClient == null) {
 				pool = CassandraClientPoolFactory.INSTANCE.get();
 
-				StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+				StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient4");
 				try {
 					client = pool.borrowClient(workingCassandraHostList);
 				} catch (NullPointerException e) {
@@ -681,6 +686,7 @@ public class Cfmap {
 
 	public HashMap<String, HashMap> getChanges(String ipaddr, String zone, String rowkey) throws Exception {
 		String zonename = getZoneName(ipaddr, zone);
+		// String zonename ="unset";
 		if (zonename != null) {
 			return getChanges(zonename, rowkey);
 		}
@@ -692,9 +698,9 @@ public class Cfmap {
 	public void clearOldHistory(String ipaddr, String zone, String table, int count, String rowkey, int secondsold)
 			throws Exception {
 		String zonename = getZoneName(ipaddr, zone);
-		System.out.println("Clearing in use 1 : " + clearing_in_use);
+		System.out.println("-Clearing in use 1 : " + clearing_in_use);
 		clearOldHistory(zonename, table, count, rowkey, secondsold);
-		System.out.println("Clearing in use 2 : " + clearing_in_use);
+		System.out.println("=Clearing in use 2 : " + clearing_in_use);
 	}
 
 	public void clearOldRows(String zonename, String table, int count) throws Exception {
@@ -741,7 +747,9 @@ public class Cfmap {
 						.setCount(100));
 				ColumnParent parent = new ColumnParent();
 				parent.setColumn_family(table); // "changes"
+				stopWatch = new LoggingStopWatch("TimeToGetClient4");
 				Map<String, List<Column>> rows = keyspace.getRangeSlices(parent, predicate, keyrange);
+				stopWatch.stop("TimeToGetClient4");
 
 				Iterator<String> keys = rows.keySet().iterator();
 				int i = 0;
@@ -777,6 +785,7 @@ public class Cfmap {
 			clearing_in_use = 0;
 		}
 
+		System.out.println("Deleting: 1 ");
 		if ((clearing_in_use == 0) && (Messages.getString("com.ingenuity.cfmap.cleanup") != null)
 				&& (Messages.getString("com.ingenuity.cfmap.cleanup").equals("on"))) {
 			clearing_in_use++;
@@ -789,12 +798,13 @@ public class Cfmap {
 			CassandraClient client_delete = null;
 			Keyspace keyspace = null;
 			Keyspace keyspace_delete = null;
+			System.out.println("Deleting: 2 ");
 			try {
 				pool = CassandraClientPoolFactory.INSTANCE.get();
 				pool_delete = CassandraClientPoolFactory.INSTANCE.get();
 				// client = poolBorrowClient(pool);
 
-				StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+				StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient.1");
 				try {
 					client = pool.borrowClient(workingCassandraHostList);
 				} catch (NullPointerException e) {
@@ -809,10 +819,14 @@ public class Cfmap {
 				SlicePredicate predicate = new SlicePredicate();
 				predicate.setSlice_range(new SliceRange().setStart("".getBytes()).setFinish("".getBytes())
 						.setCount(100));
+				System.out.println("Deleting: 3 ");
 
 				ColumnParent parent = new ColumnParent();
 				parent.setColumn_family(table); // "history"
+
+				stopWatch = new LoggingStopWatch("TimeToGetClient.3.1 " + rowkey);
 				List<SuperColumn> results = keyspace.getSuperSlice(rowkey, parent, predicate);
+				stopWatch.stop();
 
 				for (SuperColumn result : results) {
 					String colname = new String(result.getName(), "UTF-8");
@@ -838,6 +852,7 @@ public class Cfmap {
 				}
 				client = keyspace.getClient();
 				client_delete = keyspace_delete.getClient();
+				System.out.println("Deleted: 4 - total " + deleted);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -847,17 +862,32 @@ public class Cfmap {
 				clearing_in_use--;
 			}
 		}
+		System.out.println("Deleting: 5 ");
+
 	}
 
 	protected HashMap<String, HashMap> getChanges(String zonename, String rowkey) throws Exception {
 		HashMap<String, HashMap> sr = new HashMap<String, HashMap>();
+
+		System.out.println("|||| - 1");
+
+		if (rowkey.equals("updatefeed")) {
+			System.out.println("||| ---------- Clearing old update history");
+			clearOldHistory(zonename, "history", 99, "updatefeed", 1800);
+		}
+
+		/*
+		 * if (rowkey.equals("statfeed")) {
+		 * System.out.println("||| ---------- Clearing old stat history");
+		 * clearOldHistory(zonename, "history", 99, "statfeed", 1800); }
+		 */
 
 		CassandraClientPool pool = null;
 		CassandraClient client = null;
 		Keyspace keyspace = null;
 		try {
 			pool = CassandraClientPoolFactory.INSTANCE.get();
-			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient2");
 			try {
 				client = pool.borrowClient(workingCassandraHostList);
 			} catch (NullPointerException e) {
@@ -872,8 +902,15 @@ public class Cfmap {
 
 			ColumnParent parent = new ColumnParent();
 			parent.setColumn_family("history");
+
+			// if (rowkey.equals("updatefeed")) {
+			// keyspace.remove(rowkey, new
+			// ColumnPath().setColumn_family("history"));
+			// }
+
 			List<SuperColumn> results = keyspace.getSuperSlice(rowkey, parent, predicate);
 
+			// if (1 == 2) {
 			for (SuperColumn result : results) {
 				String colname = new String(result.getName(), "UTF-8");
 				List<Column> cols = result.columns;
@@ -887,12 +924,14 @@ public class Cfmap {
 				}
 				sr.put(colname, sortedresults);
 			}
+			// }
 			client = keyspace.getClient();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			pool.releaseClient(client);
 		}
+
 		return sr;
 	}
 
@@ -902,6 +941,7 @@ public class Cfmap {
 			return insertandinvert(zonename, properties);
 		}
 		return null;
+
 	}
 
 	protected void publishChange(String zonename, String hostname, String appname, String port, String clustername,
@@ -922,6 +962,37 @@ public class Cfmap {
 		hashmap1.put("info", json);
 		System.out.println("-- publishChange : " + json);
 		updateHost(zonename, "updatefeed", hashmap1, hashmap2, false);
+	}
+
+	protected String summarizeStat(HashMap<String, String> newproperties) {
+		String result = "";
+		Iterator<String> propIterator = newproperties.keySet().iterator();
+		while (propIterator.hasNext()) {
+			String key = propIterator.next();
+			if (key.startsWith("stats_")) {
+				String[] s = key.split("_");
+				if (s.length > 2) {
+					if ((s[1].length() > 0) && key.startsWith("stats_" + s[1] + "_")
+							&& (newproperties.containsKey(s[1]))) {
+						String key1 = key;
+						key1 = key1.replace("stats_" + s[1] + "_", newproperties.get(s[1]) + ".");
+						if (s[1].equals("host")) {
+							result = result + "server." + key1 + "=" + newproperties.get(key) + ",";
+						} else {
+							if (s[1].equals("cluster")) {
+								result = result + "cluster." + key1 + "=" + newproperties.get(key) + ",";
+							} else {
+								result = result + "process." + key1 + "=" + newproperties.get(key) + ",";
+							}
+						}
+					}
+				}
+			}
+		}
+		if (result.length() > 5) {
+			result = System.currentTimeMillis() + ":" + result;
+		}
+		return result;
 	}
 
 	protected String summarizeChange(HashMap<String, String> newproperties, HashMap<String, String> oldproperties) {
@@ -964,7 +1035,7 @@ public class Cfmap {
 		Keyspace keyspace = null;
 		try {
 			pool = CassandraClientPoolFactory.INSTANCE.get();
-			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient");
+			StopWatch stopWatch = new LoggingStopWatch("TimeToGetClient3");
 			try {
 				client = pool.borrowClient(workingCassandraHostList);
 				try {
@@ -987,10 +1058,29 @@ public class Cfmap {
 					}
 
 					properties.remove("key");
-					// properties.remove("crypt");
+
+					/*
+					 * // This block logs stat_ events to a seperate column
+					 * which will be pumped into graphite later Iterator<String>
+					 * keys_ = properties.keySet().iterator();
+					 * HashMap<String,String> changes_=new
+					 * HashMap<String,String>(); while(keys_.hasNext()){ String
+					 * key=(String)keys_.next(); if (key.startsWith("stat_")){
+					 * changes_.put(properties.get("host")+":"+key,
+					 * properties.get(key)); } } updateHost(zonename,
+					 * "statfeed", changes_, new HashMap<String,String>(),
+					 * false);
+					 */
 
 					Iterator<String> keys = properties.keySet().iterator();
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
+					String statChange = summarizeStat(properties);
+
+					// todo : is this correct ?
+					if ((statChange != null) && (statChange.length() > 16)) {
+						publishChange(zonename, properties.get("host"), "stats", "stats", "stats", statChange);
+					}
+
 					if ((oldProperties != null) && (oldProperties.size() > 0)) {
 						updateHost(zonename, rowkey, properties, oldProperties, true);
 						String summaryChange = summarizeChange(properties, oldProperties);

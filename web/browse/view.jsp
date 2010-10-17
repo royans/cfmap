@@ -14,16 +14,25 @@
 		format = "img"; // shell
 	}
 
+	// Figure out what the default view mode is. Ingenuity uses "app" but opensource uses "host"
 	String type = Messages.getString("cfmap_default_type");
-	if (type == null) {
-		type = "app";
-	}
-
-	//if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
-	//	type = request.getParameter("type");
-	//} else {
+	//if (type == null) {
 	//	type = "app";
 	//}
+
+	// Figure out if graphite is enabled
+	String graphite_enabled = Messages.getString("com.ingenuity.cfmap.graphite");
+	if ((graphite_enabled.length() < 7) || (request.getParameter("clustername") == null)) {
+		graphite_enabled = null;
+	}
+
+	if ((request.getParameter("type") != null) && (request.getParameter("type").length() > 0)) {
+		type = request.getParameter("type");
+	} else {
+		if (type==null){
+		type = "app";
+		}
+	}
 
 	String[] cols;
 	if (request.getParameter("cols") != null) {
@@ -67,15 +76,21 @@
 		float _host_load_max = 0;
 		float _host_load_total = 0;
 		float _host_load = 0;
+		String zone = "";
+		if (request.getParameter("z") != null) {
+			zone = request.getParameter("z");
+		} else {
+			zone = "dev";
+		}
 
-		if ((request.getParameter("z") != null)) {
-			String zone = request.getParameter("z");
+		if (zone != null) {
 			String ipaddr = request.getRemoteAddr();
 			if (find.size() == 0) {
 				find.put("type", type);
 			}
 			ArrayList<String> cols_present = new ArrayList<String>();
 			HashMap<String, HashMap<String, String>> hostsProperties = t.getHostsProperties(ipaddr, zone, find);
+			System.out.println("=== " + hostsProperties.size());
 
 			if (format.equals("html")) {
 				Iterator<String> hosts = hostsProperties.keySet().iterator();
@@ -85,6 +100,7 @@
 				while (hosts.hasNext()) {
 					String host = hosts.next();
 					HashMap<String, String> properties = hostsProperties.get(host);
+					//System.out.println(" ==== "+properties.size());						
 					properties.remove("crypt");
 					try {
 
@@ -150,7 +166,7 @@
 						if (ss.length > 1) {
 							colname = ss[1];
 						}
-						if ((cols_present.contains(ss[0]) == true) || (ss[0].equals("key"))) {
+						if ((cols_present.contains(ss[0]) == true) || (!ss[0].equals("key"))) {
 							if (ss.length > 1) {
 								out.println("<th>" + colname + "</th>");
 							} else {
@@ -169,6 +185,11 @@
 				out.println("<tr><td colspan=20>");
 				{
 					CfmapProp p = new CfmapProp(zone, null, null);
+					if (graphite_enabled != null) {
+						out.println("<a href=''> <img src='" + graphite_enabled
+								+ "/render/?width=200&height=100&graphOnly=true&hideLegend=true"
+								+ p.fromArrayToGraphiteTarget(serverlist, "server", "loadavg1m") + "'></a>");
+					}
 					out
 							.println("<table style='width:100%;border-top:1px dotted gray;padding-top:10px;margin-top:10px;'>");
 					out.println("<tr><td style='font-weight:bold;width:300px;'>Clusters ("
