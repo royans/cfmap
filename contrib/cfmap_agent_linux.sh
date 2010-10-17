@@ -1,4 +1,7 @@
 #!/bin/bash
+# use cfquery.pl in the bin directory for a linux agent. This version of the agent is very old and shouldn't be used unless cfquery.pl doesn't work for your platform
+
+
 HOST=`hostname`
 CFMAPURL='http://webtrace.info'
 FREEMEM=`free -m  | grep Mem: | awk '{print $4}'`
