@@ -292,21 +292,23 @@ public class Cfmap {
 							keyspace.insert(host, cp, newValue.getBytes());
 						} else {
 							if (newProperty.startsWith("stats_host_")) {
-								cleanuptables.add("stats_host_" + oldPropertylist.get("host"));
+								String graphite_enabled = Messages.getString("com.ingenuity.cfmap.graphite");
+								// log stats into history only if graphite export is enabled
+								if ((graphite_enabled != null)&&(graphite_enabled.length()>10)) {
+									cleanuptables.add("stats_host_" + oldPropertylist.get("host"));
 
-								cp = new ColumnPath("history");
-								String p = newProperty;
-								p.replaceFirst("stats_host_", "");
+									cp = new ColumnPath("history");
+									String p = newProperty;
+									p.replaceFirst("stats_host_", "");
 
-								cp.setSuper_column(p.getBytes());
-								java.util.UUID timeuuid = getTimeUUID();
-								byte[] timeuuid_encoded = asByteArray(timeuuid);
-								cp.setColumn(timeuuid_encoded);
-								keyspace.insert("stats_host_" + oldPropertylist.get("host"), cp, newValue.getBytes());
+									cp.setSuper_column(p.getBytes());
+									java.util.UUID timeuuid = getTimeUUID();
+									byte[] timeuuid_encoded = asByteArray(timeuuid);
+									cp.setColumn(timeuuid_encoded);
+									keyspace.insert("stats_host_" + oldPropertylist.get("host"), cp, newValue
+											.getBytes());
+								}
 							}
-							// todo:this is where the code for statfeed insert
-							// goes
-							// System.out.println("rkt: updatehost 5");
 						}
 						cp = new ColumnPath("forward");
 						cp.setColumn((newProperty).getBytes());
@@ -324,6 +326,7 @@ public class Cfmap {
 		Iterator<String> i = cleanuptables.iterator();
 		while (i.hasNext()) {
 			String host = i.next();
+
 			if (host.startsWith("stats_host_") || (host.equals("updatefeed"))) {
 				clearOldHistory(zonename, "history", 99, host, 3600 * 2);
 				System.out.println("|||| ---- Clearing some old history from " + host + " .. ");
@@ -873,14 +876,8 @@ public class Cfmap {
 
 		if (rowkey.equals("updatefeed")) {
 			System.out.println("||| ---------- Clearing old update history");
-			clearOldHistory(zonename, "history", 99, "updatefeed", 1800);
+			clearOldHistory(zonename, "history", 1000, "updatefeed", 1800);
 		}
-
-		/*
-		 * if (rowkey.equals("statfeed")) {
-		 * System.out.println("||| ---------- Clearing old stat history");
-		 * clearOldHistory(zonename, "history", 99, "statfeed", 1800); }
-		 */
 
 		CassandraClientPool pool = null;
 		CassandraClient client = null;
@@ -1072,7 +1069,6 @@ public class Cfmap {
 					 * false);
 					 */
 
-					Iterator<String> keys = properties.keySet().iterator();
 					HashMap<String, String> oldProperties = getRaw(zonename, "forward", rowkey);
 					String statChange = summarizeStat(properties);
 
@@ -1098,6 +1094,7 @@ public class Cfmap {
 							properties.put("type", type);
 						}
 
+						Iterator<String> keys = properties.keySet().iterator();
 						while (keys.hasNext()) {
 							String key = (String) keys.next();
 							ColumnPath forward_cp = new ColumnPath("forward").setColumn((key).getBytes());
