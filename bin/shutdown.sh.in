@@ -1,7 +1,6 @@
 #!/bin/bash
 
-BASE0=`dirname $0`
-BASE=${BASE0}/..
+BASE=@prefix@/@appname
 
 source $BASE/bin/env.sh
 

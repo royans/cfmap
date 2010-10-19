@@ -1,0 +1,10 @@
+AC_INIT(myconfig, version-0.1)
+AC_MSG_NOTICE([Hello, world.])
+AC_PROG_CC
+AC_SUBST(appname, cfmap)
+AC_PATH_PROG(maven,mvn)
+AC_PATH_PROG(ant,ant)
+AC_PATH_PROG(java,java)
+AC_PATH_PROG(javac,javac)
+AC_CONFIG_FILES([additionalbuild.sh], [chmod +x additionalbuild.sh])
+AC_OUTPUT(build.xml bin/startup.sh bin/shutdown.sh contrib/cassandra/log4j.properties contrib/cassandra/storage-conf.xml)

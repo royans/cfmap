@@ -23,7 +23,7 @@ done
 # prepare dirs
 ########################################
 
-mkdir -p $BASE/output/lib
+mkdir -p /usr/local/cfmap/lib
 mkdir -p $BASE/tmp
 cd $BASE/tmp
 
@@ -36,7 +36,7 @@ cd $BASE/tmp
 svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
 cd $JETTYC/jetty-runner
 mvn clean install
-cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/lib/jetty-runner.jar
+cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar /usr/local/cfmap/lib/jetty-runner.jar
 cd $BASE
 
 ########################################
@@ -45,17 +45,9 @@ cd $BASE
 
 tar -xvzf contrib/apache-cassandra-0.6.4-bin.tar.gz
 rm -rf cassandra
-mv apache-cassandra-0.6.4 $BASE/output/cassandra
-
-#rm -rf $BASE/output/target
+mv apache-cassandra-0.6.4 /usr/local/cfmap/cassandra
 
 rm -rf $BASE/binaries
 mv $BASE/output $BASE/binaries
 
 exit
-########################################
-# compile cfmap
-########################################
-
-cd $BASE/build
-ant
