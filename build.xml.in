@@ -42,16 +42,16 @@
     </path>
 
     <target name="clean">
-        <delete quiet="true">
+        <delete >
             <fileset dir="${dest.dir}" includes="**/*"/>
         </delete>
-        <delete dir="${temp.dir}"  quiet="true"/>
-        <delete dir="${temp.dir.classes}"  quiet="true"/>
-        <delete dir="${temp.dir.meta-inf}"  quiet="true"/>
-        <delete dir="${temp.dir.web-inf}"  quiet="true"/>
+        <delete dir="${temp.dir}"  />
+        <delete dir="${temp.dir.classes}"  />
+        <delete dir="${temp.dir.meta-inf}" />
+        <delete dir="${temp.dir.web-inf}"  />
     </target>
 
-    <target name="prepare" depends="clean">
+    <target name="prepare" >
         <mkdir dir="${dest.dir}" />
         <mkdir dir="${dest.dir}/bin" />
         <mkdir dir="${dest.dir}/lib" />
@@ -114,7 +114,7 @@
         </fileset>
       </copy>
 
-
+      <!--
       <copy todir="${dest.dir}/conf/cassandra/">
         <fileset dir="${contrib_cassandra.dir}">
           <include name="**/storage-conf.xml"/>
@@ -139,7 +139,7 @@
         </fileset>
       </copy>
 
-
+      -->
       <!-- the ant war task. with all resources in place, create the war file -->
       <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
         <fileset dir="${pages.dir}"/>
