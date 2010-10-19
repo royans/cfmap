@@ -33,7 +33,7 @@ cd $BASE/tmp
 
 JETTYC=jetty-contrib-7.0.0.pre5
 cd $BASE/tmp
-svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
+echo p | svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
 cd $JETTYC/jetty-runner
 mvn clean install
 cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar @prefix@/@appname@/lib/jetty-runner.jar
