@@ -622,9 +622,9 @@ EXEEXT
 OBJEXT
 appname
 MAVEN
-ant
-java
-javac
+ANT
+JAVA
+JAVAC
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -2615,12 +2615,12 @@ fi
 set dummy ant; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_path_ant+set}" = set; then
+if test "${ac_cv_path_ANT+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  case $ant in
+  case $ANT in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_ant="$ant" # Let the user override the test with a path.
+  ac_cv_path_ANT="$ANT" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -2630,7 +2630,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_ant="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_ANT="$as_dir/$ac_word$ac_exec_ext"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2641,26 +2641,31 @@ IFS=$as_save_IFS
   ;;
 esac
 fi
-ant=$ac_cv_path_ant
-if test -n "$ant"; then
-  { echo "$as_me:$LINENO: result: $ant" >&5
-echo "${ECHO_T}$ant" >&6; }
+ANT=$ac_cv_path_ANT
+if test -n "$ANT"; then
+  { echo "$as_me:$LINENO: result: $ANT" >&5
+echo "${ECHO_T}$ANT" >&6; }
 else
   { echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6; }
 fi
 
 
+if test "x$ANT" = "x"; then
+	  { { echo "$as_me:$LINENO: error: you need to have ant installed!" >&5
+echo "$as_me: error: you need to have ant installed!" >&2;}
+   { (exit 1); exit 1; }; }
+fi
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_path_java+set}" = set; then
+if test "${ac_cv_path_JAVA+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  case $java in
+  case $JAVA in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_java="$java" # Let the user override the test with a path.
+  ac_cv_path_JAVA="$JAVA" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -2670,7 +2675,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_java="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_JAVA="$as_dir/$ac_word$ac_exec_ext"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2681,26 +2686,31 @@ IFS=$as_save_IFS
   ;;
 esac
 fi
-java=$ac_cv_path_java
-if test -n "$java"; then
-  { echo "$as_me:$LINENO: result: $java" >&5
-echo "${ECHO_T}$java" >&6; }
+JAVA=$ac_cv_path_JAVA
+if test -n "$JAVA"; then
+  { echo "$as_me:$LINENO: result: $JAVA" >&5
+echo "${ECHO_T}$JAVA" >&6; }
 else
   { echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6; }
 fi
 
 
+if test "x$JAVA" = "x"; then
+	  { { echo "$as_me:$LINENO: error: you need to have java installed!" >&5
+echo "$as_me: error: you need to have java installed!" >&2;}
+   { (exit 1); exit 1; }; }
+fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_path_javac+set}" = set; then
+if test "${ac_cv_path_JAVAC+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  case $javac in
+  case $JAVAC in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_javac="$javac" # Let the user override the test with a path.
+  ac_cv_path_JAVAC="$JAVAC" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -2710,7 +2720,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_javac="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_JAVAC="$as_dir/$ac_word$ac_exec_ext"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2721,16 +2731,21 @@ IFS=$as_save_IFS
   ;;
 esac
 fi
-javac=$ac_cv_path_javac
-if test -n "$javac"; then
-  { echo "$as_me:$LINENO: result: $javac" >&5
-echo "${ECHO_T}$javac" >&6; }
+JAVAC=$ac_cv_path_JAVAC
+if test -n "$JAVAC"; then
+  { echo "$as_me:$LINENO: result: $JAVAC" >&5
+echo "${ECHO_T}$JAVAC" >&6; }
 else
   { echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6; }
 fi
 
 
+if test "x$JAVAC" = "x"; then
+	  { { echo "$as_me:$LINENO: error: you need to have javac installed!" >&5
+echo "$as_me: error: you need to have javac installed!" >&2;}
+   { (exit 1); exit 1; }; }
+fi
 ac_config_files="$ac_config_files additionalbuild.sh"
 
 ac_config_files="$ac_config_files build.xml bin/startup.sh bin/shutdown.sh contrib/cassandra/log4j.properties contrib/cassandra/storage-conf.xml"
@@ -3414,9 +3429,9 @@ EXEEXT!$EXEEXT$ac_delim
 OBJEXT!$OBJEXT$ac_delim
 appname!$appname$ac_delim
 MAVEN!$MAVEN$ac_delim
-ant!$ant$ac_delim
-java!$java$ac_delim
-javac!$javac$ac_delim
+ANT!$ANT$ac_delim
+JAVA!$JAVA$ac_delim
+JAVAC!$JAVAC$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
