@@ -120,9 +120,9 @@
    ~ disk.  Keep the data disks and the CommitLog disks separate for best
    ~ performance
   -->
-  <CommitLogDirectory>/usr/local/ingenuity/cfmap/cassandra/data/commitlog</CommitLogDirectory>
+  <CommitLogDirectory>@prefix@/@appname@/cassandra/data/commitlog</CommitLogDirectory>
   <DataFileDirectories>
-      <DataFileDirectory>/usr/local/ingenuity/cfmap/cassandra/data/data</DataFileDirectory>
+	  <DataFileDirectory>@prefix@/@appname@/cassandra/data/data</DataFileDirectory>
   </DataFileDirectories>
 
 

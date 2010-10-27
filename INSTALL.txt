@@ -4,19 +4,26 @@ Requirements
 	Java 1.6
 	Jakarta Ant
 	Maven (mvn) if you need to install Jetty webserver, (recommended)
+
+Notes:
 	Cfmap comes with scripts to start on Linux, but you should be able to run it on pretty much any platform.
 	The standard install comes bundled with cassandra binaries, but you can use your own cluster if you already have one.
 	It also comes with Jetty webserver which again is optional if you want to use your own webserver.
 
 Download Source
-	svn checkout https://cfmap.googlecode.com/svn/trunk/ cfmap
+	git clone http://github.com/royans/cfmap.git
 
-Build Source
-	Build the package using ant.
-		cd cfmap/build
+Configure and Compile
+	Run the following commands.  (Default installation directory is /usr/local )
+		cd cfmap
+		./configure
 		ant
 
-	Copy the tarball to the desired location and untar it.
+	or, if you wish to install into a directory other than /usr/local, specify it with the --prefix flag:
+		./configure --prefix=/my/new/path
+		ant
+	
+
 
 Start/Stop
 	Start
@@ -25,7 +32,4 @@ Start/Stop
 		bin/shutdown.sh
 
 Configuring cfmap
-	cfmap.properties can be tweaked to do few interesting things. The most important of which is the fact that you would probably like to run cfmap as a cluster across multiple nodes.
-
-	You can set "cassandra_servers" to any number of servers. At the very least we recommend you to set this to an actual hostname or IP address where cfmap will be run. This information is used within cassandra configuration file as the seed address which all the cassandra servers will be contacting to discover the full cassandra network.
-	cfmap_port is set to the port on which jetty listens on. Set it to whatever works for you.
+	cfmap.properties can be tweaked to do few interesting things. The most important of which is the fact that you would probably like to run cfmap as a cluster across multiple nodes. You can set "cassandra_servers" to any number of servers. At the very least we recommend you to set this to an actual hostname or IP address where cfmap will be run. This information is used within cassandra configuration file as the seed address which all the cassandra servers will be contacting to discover the full cassandra network.  cfmap_port is set to the port on which jetty listens on. Set it to whatever works for you.

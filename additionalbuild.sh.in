@@ -1,6 +1,6 @@
 #!/bin/bash
 cd `dirname $0`
-BASE=`pwd`/..
+BASE=`pwd`
 
 ########################################
 # check for tools
@@ -23,7 +23,7 @@ done
 # prepare dirs
 ########################################
 
-mkdir -p $BASE/output/lib
+mkdir -p @prefix@/@appname@/lib
 mkdir -p $BASE/tmp
 cd $BASE/tmp
 
@@ -33,29 +33,20 @@ cd $BASE/tmp
 
 JETTYC=jetty-contrib-7.0.0.pre5
 cd $BASE/tmp
-svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
+echo p | svn co https://svn.codehaus.org/jetty-contrib/jetty/tags/$JETTYC/
 cd $JETTYC/jetty-runner
 mvn clean install
-cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar $BASE/output/lib/jetty-runner.jar
+cp $BASE/tmp/$JETTYC/jetty-runner/target/jetty-runner*.jar @prefix@/@appname@/lib/jetty-runner.jar
 cd $BASE
+
+echo "CHECKING DESTINATION DIR"
+ls -l  @prefix@/@appname@/lib/jetty-runner.jar
+
 
 ########################################
 # prepare cassandra
 ########################################
 
 tar -xvzf contrib/apache-cassandra-0.6.4-bin.tar.gz
-rm -rf cassandra
-mv apache-cassandra-0.6.4 $BASE/output/cassandra
-
-#rm -rf $BASE/output/target
-
-rm -rf $BASE/binaries
-mv $BASE/output $BASE/binaries
-
+mv apache-cassandra-0.6.4 @prefix@/@appname@/cassandra
 exit
-########################################
-# compile cfmap
-########################################
-
-cd $BASE/build
-ant

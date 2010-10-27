@@ -1,4 +1,4 @@
-<project name="cfmap" basedir=".." default="package">
+<project name="cfmap" basedir="." default="package">
 
     <tstamp>
 	<format property="DATE" pattern="yyyyMMdd-HHmmss" locale="en,UK"/>
@@ -22,9 +22,9 @@
     <property name="src.dir" value="src" />
     <property name="src.tests.dir" value="src-tests" />
     <property name="resources.dir" value="resources" />
-    <property name="dest.dir" value="output" />
+    <property name="dest.dir" value="@prefix@/@appname@" />
 
-    <exec executable="build/setup.sh" />
+    <exec executable="./additionalbuild.sh" />
 
     <!-- put everything in a temp folder with the right structure during the build -->
     <property name="temp.dir" value="tmp" />
@@ -42,16 +42,16 @@
     </path>
 
     <target name="clean">
-        <delete quiet="true">
+        <delete >
             <fileset dir="${dest.dir}" includes="**/*"/>
         </delete>
-        <delete dir="${temp.dir}"  quiet="true"/>
-        <delete dir="${temp.dir.classes}"  quiet="true"/>
-        <delete dir="${temp.dir.meta-inf}"  quiet="true"/>
-        <delete dir="${temp.dir.web-inf}"  quiet="true"/>
+        <delete dir="${temp.dir}"  />
+        <delete dir="${temp.dir.classes}"  />
+        <delete dir="${temp.dir.meta-inf}" />
+        <delete dir="${temp.dir.web-inf}"  />
     </target>
 
-    <target name="prepare" depends="clean">
+    <target name="prepare" >
         <mkdir dir="${dest.dir}" />
         <mkdir dir="${dest.dir}/bin" />
         <mkdir dir="${dest.dir}/lib" />
@@ -98,10 +98,17 @@
 
       <copy todir="${dest.dir}/bin/">
         <fileset dir="${bin.dir}">
+<<<<<<< HEAD:build/build.xml
           <include name="**/start*"/>
           <include name="**/shutdown*"/>
           <include name="**/env*"/>
           <include name="**/cfq*"/>
+=======
+          <include name="**/startup.sh"/>
+          <include name="**/cfquery.pl"/>
+          <include name="**/env.sh"/>
+          <include name="**/shutdown.sh"/>
+>>>>>>> 0750978f1fc8aee3156b37e9b318dd785c912a8d:build.xml.in
         </fileset>
       </copy>
 
@@ -114,13 +121,14 @@
         </fileset>
       </copy>
 
-
       <copy todir="${dest.dir}/conf/cassandra/">
         <fileset dir="${contrib_cassandra.dir}">
-          <include name="**/*.*"/>
+          <include name="**/storage-conf.xml"/>
+          <include name="**/log4j.properties"/>
         </fileset>
       </copy>
 
+      <!--
 
       <copydir dest="${dest.dir}/cassandra" src="${binaries.dir}/cassandra" />
       <chmod file="${dest.dir}/cassandra/bin/*" perm="ugo+x" />
@@ -138,18 +146,13 @@
         </fileset>
       </copy>
 
-
+      -->
       <!-- the ant war task. with all resources in place, create the war file -->
       <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
         <fileset dir="${pages.dir}"/>
         <lib dir="${lib.dir}" />
         <classes dir="${temp.dir.classes}" />
       </war>
-
-    <tar destfile="cfmap.tar" basedir="${dest.dir}"/>
-    <gzip destfile="cfmap-${DATE}.tar.gz" src="cfmap.tar"/>
-
-    <delete file="cfmap.tar"/>
 
     </target>
 

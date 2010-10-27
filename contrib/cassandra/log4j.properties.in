@@ -40,7 +40,7 @@ log4j.appender.SYSLOG.layout.ConversionPattern=%d{mm:ss} [%t] %-5p (%C:%M:%L) - 
 log4j.appender.SYSLOG.Facility=UUCP
 
 # Edit the next line to point to your logs directory
-log4j.appender.R.File=LOGFILELOCATION
+log4j.appender.R.File=@prefix@/@appname@/logs/cassandra-system.log
 
 # Application logging options
 #log4j.logger.com.facebook=DEBUG
